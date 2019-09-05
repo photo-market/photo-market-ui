@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/photo-market/photo-market-ui.svg?branch=master)](https://travis-ci.com/photo-market/photo-market-ui)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=photo-market_photo-market-ui&metric=alert_status)](https://sonarcloud.io/dashboard?id=photo-market_photo-market-ui)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
