@@ -93,21 +93,21 @@ export default () => {
             <Header>
                 <Logo>
                     <Link to="/">
-                        <img height="17px" width="197px" src={require("./logo.png")} alt="Logo"/>
+                        <img height="17px" width="197px" src={require("../app/logo.png")} alt="Logo"/>
                     </Link>
                 </Logo>
 
                 <Links>
-                    <Link to="/signup">Join as a photographer</Link>
-                    <Link to="/signup">Sign up</Link>
-                    <Link to="/login">Login</Link>
+                    <Link to="/auth/signup">Join as a photographer</Link>
+                    <Link to="/auth/signup">Sign up</Link>
+                    <Link to="/auth/login">Login</Link>
                 </Links>
             </Header>
 
             <MobileHeader>
                 <MenuHead>
                     <button onClick={toggleMobileMenu}>
-                        <img height="17px" width="197px" src={require("./logo.png")} alt="Logo"/>
+                        <img height="17px" width="197px" src={require("../app/logo.png")} alt="Logo"/>
                         <img src={require(isMobileMenuOpen ? './up-arrow.svg' : './down-arrow.svg')}
                              alt=""
                              style={{marginLeft: '10px', height: '13px', width: '13px'}}
@@ -117,9 +117,9 @@ export default () => {
                 <MenuList open={isMobileMenuOpen}>
                     <ul>
                         <li><Link to="/">Home</Link></li>
-                        <li><Link to="join">Join as a photographer</Link></li>
-                        <li><Link to="signup">Sign up</Link></li>
-                        <li><Link to="login">Log in</Link></li>
+                        <li><Link to="/auth/login">Join as a photographer</Link></li>
+                        <li><Link to="/auth/signup">Sign up</Link></li>
+                        <li><Link to="/auth/login">Log in</Link></li>
                     </ul>
                 </MenuList>
             </MobileHeader>

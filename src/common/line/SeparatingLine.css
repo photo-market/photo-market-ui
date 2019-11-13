@@ -1,0 +1,27 @@
+/*  =========== START - SEPARATING LINE ============== */
+
+.separating-line {
+    text-transform: uppercase;
+    margin: 16px 0 16px 0;
+    display: flex;
+    color: #676d73;
+    align-items: center;
+}
+
+.separating-line:before, .separating-line:after {
+    content: "";
+    display: block;
+    flex: 1;
+    background: #e9eced;
+    height: 1px;
+}
+
+.separating-line:before {
+    margin-right: 16px;
+}
+
+.separating-line:after {
+    margin-left: 16px;
+}
+
+/*  =========== END - SEPARATING LINE ============== */

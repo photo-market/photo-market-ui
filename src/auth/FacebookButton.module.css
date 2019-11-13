@@ -1,0 +1,16 @@
+.fbSignin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: #3b579d;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 4px;
+}
+
+.fbSignin img {
+    margin-right: 12px;
+}

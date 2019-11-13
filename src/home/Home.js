@@ -1,10 +1,90 @@
 import React from 'react';
+import {useEffect} from 'react';
+import styles from './Home.module.css';
 
-export default () => {
+const profiles = [
+    {
+        id: '1',
+        link: '/profile',
+        cover: 'https://via.placeholder.com/300x150',
+        name: 'Steven Crisman',
+        tags: 'Wedding, headshot',
+    },
+    {
+        id: '2',
+        link: '/profile',
+        cover: 'https://via.placeholder.com/300x150',
+        name: 'Steven Crisman',
+        tags: 'Wedding, headshot',
+    }
+];
+
+const events = [
+    {name: 'Wedding', key: 'wedding'},
+    {name: 'Portrait', key: 'portrait'},
+    {name: 'Headshot', key: 'headshot'},
+    {name: 'Event', key: 'event'},
+    {name: 'Boudoir', key: 'boudoir'},
+];
+
+export default (props) => {
+
+    // useEffect(() => {
+    //     fetch('http://localhost:3000/api/portfolio')
+    //         .then(res => res.json())
+    //         .then((res) => {
+    //             console.log(res);
+    //         })
+    // });
+
+    const submit = (event) => {
+        event.preventDefault();
+        console.log('search');
+    };
 
     return (
-      <div>
-          Home page
-      </div>
+        <div>
+            <section className={styles.callToAction}>
+                <div className={styles.callToActionModal}>
+                    <h1 className={styles.callToActionTitle}>
+                        Photo Market
+                    </h1>
+                    <div className={styles.callToActionDescription}>
+                        Right place to find a photographer. <br/>
+                        Just choose a topic we'll show you the right people.
+                    </div>
+                    <form method="get" onSubmit={submit}>
+                        <div className={styles.callToActionSelect}>
+                            <label>
+                                <select name="photograph-type">
+                                    <option value="">What's your event?</option>
+                                    {events.map(event =>
+                                        <option key={event.key} value={event.key}>{event.name}</option>
+                                    )}
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <button className="search">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section className={styles.popularProfiles}>
+                <h1>Top portfolios</h1>
+                <div className={styles.portfoliosSection}>
+                    {profiles.map(profile =>
+                        <div className={styles.portfolioCard} key={profile.id}>
+                            <a href={profile.link}>
+                                <img src={profile.cover} alt=""/>
+                            </a>
+                            <h1><a href={profile.link}>{profile.name}</a></h1>
+                            <p>{profile.tags}</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+        </div>
     );
 }
