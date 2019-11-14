@@ -42,8 +42,8 @@ function login(email, password) {
             },
             mfaRequired: (codeDeliveryDetails) => {
                 console.log("MFA");
-                var verificationCode = prompt('Please input verification code', '');
-                cognitoUser.sendMFACode(verificationCode, this);
+                // var verificationCode = window.prompt('Please input verification code', '');
+                // cognitoUser.sendMFACode(verificationCode, this);
                 reject("MFA");
             }
         });
@@ -100,7 +100,7 @@ function register(user) {
             console.log(err);
             console.log(result);
             if (err) {
-                alert(err.message);
+                console.error(err.message);
                 reject(err.code);
                 return;
             }
