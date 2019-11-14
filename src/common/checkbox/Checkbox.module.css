@@ -1,4 +1,4 @@
-.label-checkbox {
+.labelCheckbox {
     display: block;
     position: relative;
     padding-left: 28px;
@@ -9,7 +9,7 @@
 }
 
 /* Hide the browser's default checkbox */
-.label-checkbox input {
+.labelCheckbox input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -18,7 +18,7 @@
 }
 
 /* Create a custom checkbox */
-.label-checkbox .checkmark {
+.labelCheckbox .checkmark {
     position: absolute;
     top: 0;
     left: 0;
@@ -30,24 +30,24 @@
 }
 
 /* When the checkbox is checked, add a blue background */
-.label-checkbox input:checked ~ .checkmark {
+.labelCheckbox input:checked ~ .checkmark {
     background-color: #009fd9;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
-.label-checkbox .checkmark:after {
+.labelCheckbox .checkmark:after {
     content: "";
     position: absolute;
     display: none;
 }
 
 /* Show the checkmark when checked */
-.label-checkbox input:checked ~ .checkmark:after {
+.labelCheckbox input:checked ~ .checkmark:after {
     display: block;
 }
 
 /* Style the checkmark/indicator */
-.label-checkbox .checkmark:after {
+.labelCheckbox .checkmark:after {
     left: 6px;
     top: 2px;
     width: 5px;

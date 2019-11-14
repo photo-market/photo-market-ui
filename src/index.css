@@ -67,10 +67,6 @@ button {
     min-height: 48px;
 }
 
-button.wide {
-    width: 100%;
-}
-
 .grey {
     background-color: #e9eced;
 }

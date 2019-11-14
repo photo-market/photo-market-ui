@@ -1,14 +1,5 @@
 import axios from "axios";
 
-export default {
-    login,
-    socialLogin,
-    logout,
-    register,
-    getCurrentUser,
-    isAuthenticated
-};
-
 function login(email, password) {
     return axios.post('/api/v1/auth/login', {email, password})
         .then(response => {
@@ -45,3 +36,12 @@ function createSession(user) {
 function getCurrentUser() {
     return JSON.parse(localStorage.getItem('currentUser'));
 }
+
+export default {
+    login,
+    socialLogin,
+    logout,
+    register,
+    getCurrentUser,
+    isAuthenticated
+};

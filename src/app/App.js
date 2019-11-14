@@ -5,23 +5,19 @@ import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import './App.css';
 
-const Home = lazy(() => import('../home/Home'));
-const Signup = lazy(() => import('../auth/Signup'));
-const Login = lazy(() => import('../auth/Login'));
-const Account = lazy(() => import('../account'));
-const NotFound = lazy(() => import('./NotFound'));
-
 function App() {
     return (
         <Router>
             <Header/>
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
-                    <Route exact path="/" component={Home}/>
-                    <Route path="/auth/login" component={Login}/>
-                    <Route path="/auth/signup" component={Signup}/>
-                    <PrivateRoute path="/account" component={Account}/>
-                    <Route component={NotFound}/>
+                    <Route exact path="/" component={lazy(() => import('../home/Home'))}/>
+                    <Route path="/auth/login" component={lazy(() => import('../auth/Login'))}/>
+                    <Route path="/auth/signup" component={lazy(() => import('../auth/Signup'))}/>
+                    <Route path="/auth/forgot" component={lazy(() => import('../auth/Forgot'))}/>
+                    <Route path="/terms" component={lazy(() => import('../policy/TermsOfUse'))}/>
+                    <PrivateRoute path="/account" component={lazy(() => import('../account'))}/>
+                    <Route component={lazy(() => import('./NotFound'))}/>
                 </Switch>
             </Suspense>
             <Footer/>

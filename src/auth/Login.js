@@ -2,20 +2,22 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import GoogleButton from "./GoogleButton";
 import FacebookButton from "./FacebookButton";
-import styles from './Login.module.css';
 import Checkbox from "../common/checkbox/Checkbox";
 import SeparatingLine from "../common/line/SeparatingLine";
+import Button from "../common/button/Button";
+import styles from './Auth.module.css';
 
 export default () => {
 
     return (
         <main className={styles.authForm}>
-            <h1>Welcome back</h1>
+            <h1>Welcome back!</h1>
 
             <div className={styles.formModal}>
                 <form>
                     <div>
-                        <label htmlFor="email-label" className={styles.inputLabel}>
+                        <label htmlFor="email-label"
+                               className={styles.inputLabel}>
                             Email address
                         </label>
                         <input id="email-label"
@@ -42,23 +44,17 @@ export default () => {
                         <Checkbox content="Remember me"/>
                         <Link to="/auth/forgot">Forgot password?</Link>
                     </div>
-                    <button className={styles.wide}>Log In</button>
+                    <Button content="Log In" wide="true"/>
                 </form>
 
                 <SeparatingLine content="OR"/>
 
-                <p className={styles.termsWarning}>
-                    By clicking Log In with Facebook or Log In with Google,
-                    you agree to the <Link to="/terms" target="_blank">Terms of Use</Link>
-                    and <Link to="/privacy" target="_blank">Privacy Policy</Link>.
-                </p>
-
-                <GoogleButton/>
-                <FacebookButton/>
+                <GoogleButton text="Login using Google"/>
+                <FacebookButton text="Login using Facebook"/>
             </div>
 
             <p className={styles.afterwords}>
-                Don’t have an account? <Link to="/register">Sign up.</Link>
+                Don’t have an account? <Link to="/auth/signup">Sign up.</Link>
             </p>
 
         </main>

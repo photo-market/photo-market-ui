@@ -1,11 +1,11 @@
 import React from 'react';
-import "./Checkbox.css";
+import styles from "./Checkbox.module.css";
 
 export default (props) => {
     return (
-        <label className="label-checkbox">
+        <label className={styles.labelCheckbox}>
             <input type="checkbox"/>
-            <span className="checkmark"/>
+            <span className={styles.checkmark}/>
             {props.content}
         </label>
     );

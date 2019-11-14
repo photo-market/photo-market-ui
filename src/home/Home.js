@@ -1,6 +1,7 @@
 import React from 'react';
 import {useEffect} from 'react';
 import styles from './Home.module.css';
+import Select from "../common/select/Select";
 
 const profiles = [
     {
@@ -55,14 +56,10 @@ export default (props) => {
                     </div>
                     <form method="get" onSubmit={submit}>
                         <div className={styles.callToActionSelect}>
-                            <label>
-                                <select name="photograph-type">
-                                    <option value="">What's your event?</option>
-                                    {events.map(event =>
-                                        <option key={event.key} value={event.key}>{event.name}</option>
-                                    )}
-                                </select>
-                            </label>
+                            <Select placeholder="What's your event?"
+                                    options={events}
+                                    onChange={(e) => console.log(e.target.value)}
+                            />
                         </div>
                         <div>
                             <button className="search">Search</button>

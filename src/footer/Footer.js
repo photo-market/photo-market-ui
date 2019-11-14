@@ -1,15 +1,26 @@
 import React from 'react';
 import styles from './Footer.module.css';
+import {Link} from "react-router-dom";
 
 export default () => {
     return (
         <footer>
             <ul className={styles.ul}>
-                <li><a href="/about-us">About us</a></li>
-                <li><a href="/about-us">Contact us</a></li>
-                <li><a href="/sitemap">Site map</a></li>
-                <li><a href="/legal">Terms & Conditions</a></li>
-                <li><a href="/privacy">Privacy Policy</a></li>
+                <li>
+                    <Link to="/about-us">About us</Link>
+                </li>
+                <li>
+                    <Link to="/contact-us">Contact us</Link>
+                </li>
+                <li>
+                    <Link to="/sitemap">Sitemap</Link>
+                </li>
+                <li>
+                    <Link to="/terms-of-use">Terms of Use</Link>
+                </li>
+                <li>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                </li>
             </ul>
             <div>&copy; 2019 Photo Market, Inc.</div>
         </footer>
