@@ -30,13 +30,13 @@ const events = [
 
 export default (props) => {
 
-    // useEffect(() => {
-    //     fetch('http://localhost:3000/api/portfolio')
-    //         .then(res => res.json())
-    //         .then((res) => {
-    //             console.log(res);
-    //         })
-    // });
+    useEffect(() => {
+        // fetch('http://localhost:3000/api/portfolio')
+        //     .then(res => res.json())
+        //     .then((res) => {
+        //         console.log(res);
+        //     })
+    });
 
     const submit = (event) => {
         event.preventDefault();
