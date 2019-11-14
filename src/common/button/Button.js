@@ -1,10 +1,13 @@
 import React from 'react';
 import styles from "./Button.module.css";
 
-export default (props) => {
+export default ({wide, disabled, content}) => {
+    console.log(disabled);
     return (
-        <button className={props.wide ? styles.wide : ''}>
-            {props.content}
+        <button
+            className={wide ? styles.wide : ''}
+            disabled={disabled}>
+            {content}
         </button>
     );
 }

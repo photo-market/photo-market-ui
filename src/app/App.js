@@ -13,6 +13,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={lazy(() => import('../home/Home'))}/>
                     <Route path="/auth/login" component={lazy(() => import('../auth/Login'))}/>
+                    <Route path="/auth/confirm" component={lazy(() => import('../auth/Confirm'))}/>
                     <Route path="/auth/signup" component={lazy(() => import('../auth/Signup'))}/>
                     <Route path="/auth/forgot" component={lazy(() => import('../auth/Forgot'))}/>
                     <Route path="/terms" component={lazy(() => import('../policy/TermsOfUse'))}/>
