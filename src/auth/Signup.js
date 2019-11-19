@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from "react-router-dom";
 import Button from "../common/button/Button";
 import SeparatingLine from "../common/line/SeparatingLine";
@@ -7,7 +7,7 @@ import FacebookButton from "./FacebookButton";
 import auth from '../common/Auth';
 import styles from "./Auth.module.css";
 
-export default () => {
+export default (props) => {
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -15,6 +15,13 @@ export default () => {
     const [lastName, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmationNeeded, setConfirmationNeeded] = useState(false);
+
+    useEffect(() => {
+        if (confirmationNeeded) {
+            props.history.push(`/auth/confirm?email=${email}`); // pass email param?
+        }
+    });
 
     function handleSignup(e) {
         e.preventDefault();
@@ -22,23 +29,17 @@ export default () => {
         const user = {email, password, firstName, lastName};
         auth.register(user)
             .then((res) => {
-                console.log('then: ok');
+                console.log('Successfully signed-up.');
+                setConfirmationNeeded(true);
             })
             .catch((err) => {
-                console.log('catch: error happened');
+                console.log('Something happened during registration.' + JSON.stringify(err));
                 switch (err) {
-                    case 'UsernameExistsException':
-                        setError('User with such email already exist.');
-                        break;
-                    case 'InvalidPasswordException':
-                        setError('Invalid password.');
-                        break;
                     default:
                         setError('Unkown error.');
                 }
             })
             .finally(() => {
-                console.log('finally: error happened');
                 setLoading(false);
             })
     }

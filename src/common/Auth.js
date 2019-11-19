@@ -1,7 +1,10 @@
 import axios from "axios";
 import {AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool} from "amazon-cognito-identity-js";
 
-
+/**
+ * Cognito AWS Examples: Using the JavaScript SDK
+ * https://docs.amazonaws.cn/en_us/cognito/latest/developerguide/using-amazon-cognito-user-identity-pools-javascript-examples.html
+ */
 const poolData = {
     UserPoolId: 'us-east-1_69OWWddMZ',
     ClientId: '4mldl4aumvbk660dh0iuhfsq1k'
@@ -83,19 +86,11 @@ function logout() {
 function register(user) {
     //return axios.post('/api/v1/auth/register', user);
     return new Promise((resolve, reject) => {
-        const attributeList = [];
-        attributeList.push(new CognitoUserAttribute({
-            Name: 'email',
-            Value: user.email,
-        }));
-        attributeList.push(new CognitoUserAttribute({
-            Name: 'given_name',
-            Value: user.firstName,
-        }));
-        attributeList.push(new CognitoUserAttribute({
-            Name: 'family_name',
-            Value: user.lastName
-        }));
+        const attributeList = [
+            new CognitoUserAttribute({Name: 'email', Value: user.email}),
+            new CognitoUserAttribute({Name: 'given_name', Value: user.firstName}),
+            new CognitoUserAttribute({Name: 'family_name', Value: user.lastName})
+        ];
         userPool.signUp(user.email, user.password, attributeList, null, (err, result) => {
             console.log(err);
             console.log(result);
@@ -108,6 +103,26 @@ function register(user) {
             let cognitoUser = result.user;
             console.log('User name is ' + cognitoUser.getUsername());
             resolve(result);
+        });
+    });
+}
+
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CognitoIdentityServiceProvider.html#confirmSignUp-property
+function confirmSignup(params) {
+    return new Promise((resolve, reject) => {
+        const cognitoUser = new CognitoUser({
+            Username: params.email,
+            Pool: userPool
+        });
+        cognitoUser.confirmRegistration(params.confirmCode, true, (err, data) => {
+            console.log(err);
+            console.log(data);
+            if (err) {
+                console.log(err, err.stack); // an error occurred
+                reject(err);
+            } else {
+                resolve(data);
+            }
         });
     });
 }
@@ -129,6 +144,7 @@ export default {
     socialLogin,
     logout,
     register,
+    confirmSignup,
     getCurrentUser,
     isAuthenticated
 };

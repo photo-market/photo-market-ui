@@ -3,41 +3,49 @@ import {Link} from "react-router-dom";
 import Button from "../common/button/Button";
 import styles from './Auth.module.css';
 import auth from '../common/Auth';
+import queryString from 'query-string'
 
 export default (props) => {
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [confirmCode, setConfirmCode] = useState("");
-    const [success, setSuccess] = useState(false);
+    const [isConfirmed, setConfirmed] = useState(false);
 
     useEffect(() => {
-        if (success) {
-            props.history.push('/auth/confirm');
+        if (isConfirmed) {
+            props.history.push('/profile');
         }
     });
 
     function handleSubmit(e) {
         e.preventDefault();
         if (!confirmCode) {
-            setError("You need to specify email and password!");
+            setError("Please enter confirm code.");
             return;
         }
         setLoading(true);
-        auth.confirm(confirmCode)
+        const queryParams = queryString.parse(props.location.search);
+        const params = {
+            email: queryParams.email,
+            confirmCode: confirmCode
+        };
+        auth.confirmSignup(params)
             .then((res) => {
-                console.log('then: ok');
-                setSuccess(true);
+                console.log('Account confirmed.');
+                setConfirmed(true);
             })
             .catch((err) => {
-                console.log('catch: error happened');
-                switch (err) {
+                console.log('Cant verify account.' + err);
+                switch (err.code) {
+                    case "CodeMismatchException":
+                        setError("Code mismatch");
+                        break;
                     default:
                         setError('Unkown error.');
                 }
             })
             .finally(() => {
-                console.log('finally: error happened');
                 setLoading(false);
             })
     }

@@ -15,10 +15,17 @@ export default (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmationNeeded, setConfirmationNeeded] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         if (confirmationNeeded) {
-            props.history.push('/auth/confirm');
+            props.history.push(`/auth/confirm?email=${email}`);
+        }
+    });
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            props.history.push('/profile');
         }
     });
 
@@ -31,10 +38,11 @@ export default (props) => {
         setLoading(true);
         auth.login(email, password)
             .then((res) => {
-                console.log('then: ok');
+                console.log('Successfully logged-in.');
+                setIsLoggedIn(true);
             })
             .catch((err) => {
-                console.log('catch: error happened');
+                console.log('Something happened during login.' + JSON.stringify(err));
                 switch (err) {
                     case  'NotAuthorizedException':
                         setError('Incorrect email of password.');
@@ -47,7 +55,6 @@ export default (props) => {
                 }
             })
             .finally(() => {
-                console.log('finally: error happened');
                 setLoading(false);
             })
     }
