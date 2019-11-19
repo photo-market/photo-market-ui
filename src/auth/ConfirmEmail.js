@@ -58,9 +58,6 @@ export default (props) => {
             console.log("Wait before asking new code.");
             return;
         }
-        setLastResend(new Date());
-        return;
-
         const queryParams = queryString.parse(props.location.search);
         authService.resetConfirmationCode(queryParams.email)
             .then((result) => {
