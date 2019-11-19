@@ -9,6 +9,7 @@ import {
  * https://docs.amazonaws.cn/en_us/cognito/latest/developerguide/using-amazon-cognito-user-identity-pools-javascript-examples.html
  */
 
+const debug = true;
 const userPool = new CognitoUserPool(COGNITO_POOL_DATA);
 
 function login(email, password) {
@@ -81,8 +82,7 @@ function socialLogin(tokenId) {
 }
 
 function logout() {
-    console.log(`Logging out...`);
-    debugger;
+    if (debug) console.log(`Logging out...`);
     localStorage.setItem(USER_PROFILE_KEY, DEFAULT_USER);
 }
 
@@ -120,10 +120,10 @@ function confirmSignup(params) {
             Pool: userPool
         });
         cognitoUser.confirmRegistration(params.confirmCode, true, (err, result) => {
-            console.log(err);
-            console.log(result);
+            if (debug) console.log(err);
+            if (debug) console.log(result);
             if (err) {
-                console.log(err, err.stack); // an error occurred
+                if (debug) console.log(err, err.stack); // an error occurred
                 reject(err);
             } else {
                 resolve(result);
@@ -138,8 +138,7 @@ function isAuthenticated() {
 
 function saveProfile(user) {
     const userStr = JSON.stringify(user);
-    console.log('AuthService: Saving profile...' + userStr);
-    debugger;
+    if (debug) console.log('AuthService: Saving profile...' + userStr);
     localStorage.setItem(USER_PROFILE_KEY, userStr);
 }
 
@@ -152,31 +151,35 @@ function getCurrentUser() {
 }
 
 function resetConfirmationCode(email) {
-    const cognitoUser = new CognitoUser({
-        Username: email,
-        Pool: userPool
-    });
-    cognitoUser.resendConfirmationCode((err, result) => {
-        if (err) {
-            alert(err);
-            return;
-        }
-        console.log(result);
+    return new Promise((resolve, reject) => {
+        const cognitoUser = new CognitoUser({
+            Username: email,
+            Pool: userPool
+        });
+        cognitoUser.resendConfirmationCode((err, result) => {
+            if (err) {
+                if (debug) console.log(err);
+                reject(err);
+                return;
+            }
+            if (debug) console.log(result);
+            resolve(result);
+        });
     });
 }
 
 function _getAttributes(cognitoUser) {
     cognitoUser.getUserAttributes((err, result) => {
         if (err) {
-            console.log(err);
+            if (debug) console.log(err);
             return;
         }
-        console.log(result);
+        if (debug) console.log(result);
         const user = {};
         result.forEach(attr => {
             user[attr.getName()] = attr.getValue();
         });
-        console.log(user);
+        if (debug) console.log(user);
         saveProfile(user);
     });
 }

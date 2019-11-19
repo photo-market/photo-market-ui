@@ -21,7 +21,7 @@ export default () => {
                     </Link>
                 </div>
 
-                {currentUser ?
+                {authService.isAuthenticated() ?
                     <nav className={styles.siteNav}>
                         <Link to="/account">Hi, {currentUser['given_name']}</Link>
                     </nav>
@@ -47,7 +47,7 @@ export default () => {
                 <nav className={styles.headerMobileLinks}
                      style={{transform: isMobileMenuOpen ? "translateY(60px)" : "translateY(-100%)"}}>
 
-                    {currentUser ?
+                    {authService.isAuthenticated() ?
                         <ul onClick={toggleMobileMenu}>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/auth/login">Join as a photographer</Link></li>

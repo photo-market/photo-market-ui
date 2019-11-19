@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Link} from "react-router-dom";
 import Button from "../common/button/Button";
 import styles from './Auth.module.css';
-import auth from '../common/Auth';
+import authService from '../common/Auth';
 import queryString from 'query-string'
 
 export default (props) => {
@@ -11,6 +11,7 @@ export default (props) => {
     const [error, setError] = useState("");
     const [confirmCode, setConfirmCode] = useState("");
     const [isConfirmed, setConfirmed] = useState(false);
+    const [lastResend, setLastResend] = useResendCodeHandler();
 
     useEffect(() => {
         if (isConfirmed) {
@@ -30,7 +31,7 @@ export default (props) => {
             email: queryParams.email,
             confirmCode: confirmCode
         };
-        auth.confirmSignup(params)
+        authService.confirmSignup(params)
             .then((res) => {
                 console.log('Account confirmed.');
                 setConfirmed(true);
@@ -48,6 +49,46 @@ export default (props) => {
             .finally(() => {
                 setLoading(false);
             })
+    }
+
+    function handleSendNewCode() {
+        console.log('Sending new code...');
+        setLoading(true);
+        if (!canResend()) {
+            console.log("Wait before asking new code.");
+            return;
+        }
+        setLastResend(new Date());
+        return;
+
+        const queryParams = queryString.parse(props.location.search);
+        authService.resetConfirmationCode(queryParams.email)
+            .then((result) => {
+                console.log('New code sent.');
+                setLastResend(new Date());
+            })
+            .catch((error) => {
+                console.log(`Error sending new code.`);
+                switch (error.code) {
+                    case 'LimitExceededException':
+                        setError(`Too many attempts. Please wait an retry later.`);
+                        break;
+                    default:
+                        setError('Sorry, please try again later.');
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+
+    function canResend() {
+        if (!lastResend) {
+            return true;
+        }
+        const diffTime = Math.abs(new Date() - lastResend);
+        const TIMEOUT_SECONDS = 360;
+        return diffTime / 1000 >= TIMEOUT_SECONDS;
     }
 
     return (
@@ -71,10 +112,24 @@ export default (props) => {
                     </div>
                     <Button
                         disabled={isLoading}
-                        content="Confirm account"
-                        wide="true"
-                    />
-                    <div>No code? Send a new one.</div>
+                        wide="true">
+                        Confirm account
+                    </Button>
+
+                    {canResend() ?
+                        <div>
+                            No code?
+                            <Button type="button"
+                                    inline={true}
+                                    onClick={handleSendNewCode}>
+                                Send a new one.
+                            </Button>
+                        </div>
+                        :
+                        <div>
+                            New code send. Wait a bit before asking for a new one.
+                        </div>
+                    }
                 </form>
             </div>
             <p className={styles.afterwords}>
@@ -82,4 +137,66 @@ export default (props) => {
             </p>
         </main>
     );
+}
+
+// function useCountdownTimer(initialValue) {
+//     const [value, setValue] = useState(initialValue);
+//     const ONE_SECOND = 1000;
+//
+//     useEffect(() => {
+//         console.log('useEffect - setInterval');
+//         let interval;
+//         if (value > 0) {
+//             interval = setInterval(() => {
+//                 if (value > 0) {
+//                     setValue(value - 1);
+//                 }
+//             }, ONE_SECOND);
+//         }
+//         return () => {
+//             clearInterval(interval);
+//         }
+//     });
+//
+//     return value;
+// }
+
+// https://usehooks.com/useLocalStorage/
+function useResendCodeHandler() {
+    const [lastResendDate, setLastResetDate] = useState(() => {
+        const itemStr = window.localStorage.getItem('lastResendDate');
+        if (itemStr) {
+            return new Date(itemStr);
+        }
+        return null;
+    });
+
+    const timeoutRef = useRef(null);
+    useEffect(() => {
+        if (lastResendDate) {
+            const diffTimeMs = Math.abs(new Date() - lastResendDate);
+            const remainingTimeMs = 10 * 1000 - diffTimeMs;
+            if (remainingTimeMs > 0) {
+                timeoutRef.current = setTimeout(() => {
+                    setLastResetDate(null);
+                    window.localStorage.removeItem('lastResendDate');
+                }, remainingTimeMs);
+            } else {
+                setLastResetDate(null);
+                window.localStorage.removeItem('lastResendDate');
+            }
+        }
+        return () => {
+            clearTimeout(timeoutRef.current);
+        }
+    }, [lastResendDate, setLastResetDate]);
+
+    const setValue = (newVal) => {
+        if (newVal) {
+            window.localStorage.setItem('lastResendDate', newVal.toJSON());
+            setLastResetDate(newVal);
+        }
+    };
+
+    return [lastResendDate, setValue];
 }

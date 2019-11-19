@@ -1,4 +1,11 @@
 
+button[disabled] {
+    color: #fff;
+    background-color: #79d2f2;
+    border-color: #79d2f2;
+    cursor: default;
+}
+
 .wide {
     width: 100%;
 }
