@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import styles from './Header.module.css';
+import authService from "../common/Auth";
 
 export default () => {
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const currentUser = authService.getCurrentUser();
 
     function toggleMobileMenu() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -19,11 +21,17 @@ export default () => {
                     </Link>
                 </div>
 
-                <nav className={styles.siteNav}>
-                    <Link to="/auth/signup">Join as a photographer</Link>
-                    <Link to="/auth/signup">Sign up</Link>
-                    <Link to="/auth/login">Login</Link>
-                </nav>
+                {currentUser ?
+                    <nav className={styles.siteNav}>
+                        <Link to="/account">Hi, {currentUser['given_name']}</Link>
+                    </nav>
+                    :
+                    <nav className={styles.siteNav}>
+                        <Link to="/auth/signup">Join as a photographer</Link>
+                        <Link to="/auth/signup">Sign up</Link>
+                        <Link to="/auth/login">Login</Link>
+                    </nav>
+                }
             </header>
 
             <header className={styles.headerMobile}>
@@ -38,12 +46,19 @@ export default () => {
                 </div>
                 <nav className={styles.headerMobileLinks}
                      style={{transform: isMobileMenuOpen ? "translateY(60px)" : "translateY(-100%)"}}>
-                    <ul onClick={toggleMobileMenu}>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/auth/login">Join as a photographer</Link></li>
-                        <li><Link to="/auth/signup">Sign up</Link></li>
-                        <li><Link to="/auth/login">Log in</Link></li>
-                    </ul>
+
+                    {currentUser ?
+                        <ul onClick={toggleMobileMenu}>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/auth/login">Join as a photographer</Link></li>
+                            <li><Link to="/auth/signup">Sign up</Link></li>
+                            <li><Link to="/auth/login">Log in</Link></li>
+                        </ul>
+                        :
+                        <div>Hi {currentUser['given_name']}</div>
+                    }
+
+
                 </nav>
             </header>
         </div>

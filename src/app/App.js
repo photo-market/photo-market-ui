@@ -14,7 +14,13 @@ function App() {
                     <Route exact path="/" component={lazy(() => import('../home/Home'))}/>
                     <Route path="/auth" component={lazy(() => import('../auth/AuthRouter'))}/>
                     <Route path="/terms" component={lazy(() => import('../policy/TermsOfUse'))}/>
-                    <PrivateRoute path="/account" component={lazy(() => import('../account'))}/>
+
+                    <PrivateRoute path="/account"
+                                  component={lazy(() => import('../account/AccountRouter'))}/>
+                    <PrivateRoute path="/admin"
+                                  roles={['ADMIN']}
+                                  component={lazy(() => import('../admin/AdminRouter'))}/>
+
                     <Route component={lazy(() => import('./NotFound'))}/>
                 </Switch>
             </Suspense>

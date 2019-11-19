@@ -15,7 +15,7 @@ export default (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmationNeeded, setConfirmationNeeded] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(auth.isAuthenticated);
 
     useEffect(() => {
         if (confirmationNeeded) {
@@ -25,7 +25,7 @@ export default (props) => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            props.history.push('/profile');
+            props.history.push('/');
         }
     });
 
@@ -51,7 +51,7 @@ export default (props) => {
                         setConfirmationNeeded(true);
                         break;
                     default:
-                        setError('Unkown error.');
+                        setError('Unknown error.');
                 }
             })
             .finally(() => {

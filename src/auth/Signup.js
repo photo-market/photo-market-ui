@@ -36,7 +36,7 @@ export default (props) => {
                 console.log('Something happened during registration.' + JSON.stringify(err));
                 switch (err) {
                     default:
-                        setError('Unkown error.');
+                        setError('Unknown error.');
                 }
             })
             .finally(() => {

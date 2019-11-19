@@ -14,7 +14,7 @@ export default (props) => {
 
     useEffect(() => {
         if (isConfirmed) {
-            props.history.push('/profile');
+            props.history.push('/account');
         }
     });
 
