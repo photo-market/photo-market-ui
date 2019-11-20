@@ -27,8 +27,9 @@ export default () => {
                     <MenuDropdown
                         title={currentUser['given_name']}
                         items={[
-                            {to: "/account", content: `Account`},
-                            {to: "/logout", content: `Log out`},
+                            {to: "/chat", content: `Messages`},
+                            {to: "/account", content: `Settings`},
+                            {to: "/auth/sign-out", content: `Log out`},
                         ]}/>
                     :
                     <nav className={styles.siteNav}>

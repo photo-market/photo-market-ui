@@ -11,10 +11,11 @@ import {
 
 const debug = true;
 const userPool = new CognitoUserPool(COGNITO_POOL_DATA);
+let cognitoUser = null;
 
 function login(email, password) {
     return new Promise((resolve, reject) => {
-        const cognitoUser = new CognitoUser({
+        cognitoUser = new CognitoUser({
             Username: email,
             Pool: userPool
         });
@@ -28,7 +29,6 @@ function login(email, password) {
                 console.log(result);
                 // Amazon Cognito creates a session and returns an ID, access, and refresh token for the authenticated user.
                 //const accessToken = result.getAccessToken().getJwtToken();
-                //saveProfile(accessToken);
                 _getAttributes(cognitoUser);
                 resolve(result);
             },
@@ -81,9 +81,76 @@ function socialLogin(tokenId) {
         .then(response => saveProfile(response.data));
 }
 
-function logout() {
+/**
+ * Internal AWS Cognito SDK just cleans localStorage
+ * No actual ajax requests are made.
+ */
+function signOut() {
     if (debug) console.log(`Logging out...`);
-    localStorage.setItem(USER_PROFILE_KEY, DEFAULT_USER);
+    return new Promise((resolve, reject) => {
+        //saveProfile(DEFAULT_USER);
+        const cognitoUser = userPool.getCurrentUser();
+        if (cognitoUser != null) {
+            cognitoUser.getSession((err, session) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log('AuthService: Session validity: ' + session.isValid());
+                cognitoUser.signOut();
+                resolve('ok');
+            });
+        } else {
+            console.log('AuthService: No user.');
+            resolve('ok');
+        }
+    })
+}
+
+/**
+ * Makes ajax request to invalidate other tokens.
+ */
+function signOutGlobal() {
+    if (debug) console.log(`SigningOut global...`);
+    return new Promise((resolve, reject) => {
+        saveProfile(DEFAULT_USER);
+
+        // If page was reloaded
+        if (!cognitoUser) {
+            console.log('AuthService: restoring cognitoUser');
+            cognitoUser = userPool.getCurrentUser();
+            if (!cognitoUser) {
+                console.log('AuthService: no cognitoUser was found.');
+                resolve();
+                return;
+            }
+        }
+
+        cognitoUser.getSession((err, session) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log('session validity: ' + session.isValid());
+        });
+
+        try {
+            cognitoUser.globalSignOut({
+                onSuccess: msg => {
+                    console.log('AuthService: ok, signed out from all devices.');
+                    console.log(msg);
+                    resolve(msg);
+                },
+                onFailure: err => {
+                    console.log('AuthService: failed to signed out.');
+                    console.log(err, err.stack);
+                    reject(err);
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    })
 }
 
 function register(user) {
@@ -133,7 +200,7 @@ function confirmSignup(params) {
 }
 
 function isAuthenticated() {
-    return USER_PROFILE_KEY in localStorage;
+    return getCurrentUser().role !== 'GUEST';
 }
 
 function saveProfile(user) {
@@ -187,7 +254,8 @@ function _getAttributes(cognitoUser) {
 export default {
     login,
     socialLogin,
-    logout,
+    signOut,
+    signOutGlobal,
     register,
     confirmSignup,
     resetConfirmationCode,

@@ -1,5 +1,6 @@
 /** Default user auth object */
 export const DEFAULT_USER = Object.freeze({
+    role: 'GUEST',
     given_name: '',
     family_name: '',
     picture: '',
