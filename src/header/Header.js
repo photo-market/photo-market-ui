@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import styles from './Header.module.css';
 import authService from "../common/Auth";
+import MenuDropdown from "./MenuDropdown";
 
 export default () => {
 
@@ -22,9 +23,13 @@ export default () => {
                 </div>
 
                 {authService.isAuthenticated() ?
-                    <nav className={styles.siteNav}>
-                        <Link to="/account">Hi, {currentUser['given_name']}</Link>
-                    </nav>
+                    // Notifications icon
+                    <MenuDropdown
+                        title={currentUser['given_name']}
+                        items={[
+                            {to: "/account", content: `Account`},
+                            {to: "/logout", content: `Log out`},
+                        ]}/>
                     :
                     <nav className={styles.siteNav}>
                         <Link to="/auth/signup">Join as a photographer</Link>
@@ -62,5 +67,5 @@ export default () => {
                 </nav>
             </header>
         </div>
-    )
+    );
 }

@@ -1,9 +1,15 @@
 import React, {lazy, Suspense} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {fab} from '@fortawesome/free-brands-svg-icons'
+import {faCheckSquare, faChevronDown, faCoffee} from '@fortawesome/free-solid-svg-icons'
 import PrivateRoute from "../common/PrivateRoute";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import './App.css';
+
+// Pre-load icons
+library.add(fab, faChevronDown, faCheckSquare, faCoffee);
 
 function App() {
     return (
