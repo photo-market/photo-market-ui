@@ -1,41 +1,103 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from "react-router-dom";
+import * as Yup from 'yup';
 import Button from "../common/button/Button";
 import SeparatingLine from "../common/line/SeparatingLine";
 import GoogleButton from "./GoogleButton";
 import FacebookButton from "./FacebookButton";
 import auth from '../common/Auth';
 import styles from "./Auth.module.css";
+import {useFormik} from "formik";
+
+const validationSchema = Yup.object({
+    firstName: Yup.string()
+        .max(15, 'Must be 15 characters or less')
+        .required('Required'),
+    lastName: Yup.string()
+        .max(20, 'Must be 20 characters or less')
+        .required('Required'),
+    email: Yup.string()
+        .email('Invalid email address')
+        .required('Required'),
+    password: Yup.string()
+        .min(6, 'Minimum password length is 6 characters.')
+        .max(50, 'Maximum password length is 50 characters.')
+        .required('Required')
+});
+
+const initialValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: ''
+};
+
+const Input = ({formik, type, fieldName, disabled, label, autoComplete}) => {
+    let style = styles.inputText;
+    style += ' ' + (formik.touched[fieldName] && formik.errors[fieldName] ? styles.inputError : ' ');
+    return (
+        <>
+            {formik.touched[fieldName] && formik.errors[fieldName] &&
+            <div>{formik.errors[fieldName]}</div>
+            }
+            <label className={styles.inputLabel} htmlFor="firstName">
+                {label}
+            </label>
+            <input id={fieldName}
+                   name={fieldName}
+                   type={type}
+                   className={style}
+                   disabled={disabled}
+                   autoComplete={autoComplete}
+                   {...formik.getFieldProps(fieldName)}
+            />
+        </>
+    )
+};
 
 export default (props) => {
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [firstName, setFirstname] = useState("");
-    const [lastName, setLastname] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [confirmationNeeded, setConfirmationNeeded] = useState(false);
+    const formik = useFormik({
+        initialValues,
+        validationSchema,
+        onSubmit: handleSubmit,
+    });
 
     useEffect(() => {
         if (confirmationNeeded) {
-            props.history.push(`/auth/confirm?email=${email}`); // pass email param?
+            props.history.push(`/auth/confirm?email=${formik.values.email}`);
         }
     });
 
-    function handleSignup(e) {
-        e.preventDefault();
+    function handleSubmit(values) {
         setLoading(true);
-        const user = {email, password, firstName, lastName};
+        const user = {
+            email: values.email,
+            password: values.password,
+            firstName: values.firstName,
+            lastName: values.lastName
+        };
         auth.register(user)
             .then((res) => {
-                console.log('Successfully signed-up.');
+                console.log('SignUp: Successfully signed-up.');
                 setConfirmationNeeded(true);
             })
             .catch((err) => {
                 console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
                 switch (err) {
+                    case 'UsernameExistsException':
+                        setError(
+                            <p>Such email is already registered. &nbsp;
+                                <Link to="/auth/forgot">Forgot your password?</Link></p>
+                        );
+                        break;
                     case 'InvalidParameterException':
+                        setError('Check your parameters.');
+                        break;
+                    case 'InvalidPasswordException':
                         setError('Check your password');
                         break;
                     default:
@@ -51,86 +113,59 @@ export default (props) => {
         <main className={styles.authForm}>
             <h1>Create an account</h1>
             <div className={styles.formModal}>
-                <p className={styles.error}>{error}</p>
-                <form onSubmit={handleSignup} noValidate>
+                <div className={styles.error}>{error}</div>
+                <form onSubmit={formik.handleSubmit}>
                     <div className={styles.twoColumns}>
                         <div>
-                            <label className={styles.inputLabel}
-                                   htmlFor="firstname-label">
-                                First name
-                            </label>
-                            <input className={styles.inputText}
-                                   id="firstname-label"
-                                   maxLength="255"
-                                   name="firstname"
-                                   type="text"
-                                   required={true}
-                                   disabled={isLoading}
-                                   value={firstName}
-                                   onChange={(e) => setFirstname(e.target.value)}
+                            <Input
+                                formik={formik}
+                                fieldName='firstName'
+                                type="text"
+                                label="First Name"
+                                autoComplete="given-name"
+                                disabled={isLoading}
                             />
                         </div>
                         <div>
-                            <label className={styles.inputLabel}
-                                   htmlFor="lastname-label">
-                                Last name
-                            </label>
-                            <input className={styles.inputText}
-                                   id="lastname-label"
-                                   maxLength="255"
-                                   name="lastname"
-                                   type="text"
-                                   required={true}
-                                   disabled={isLoading}
-                                   value={lastName}
-                                   onChange={(e) => setLastname(e.target.value)}
+                            <Input
+                                formik={formik}
+                                type="text"
+                                fieldName='lastName'
+                                label="Last Name"
+                                autoComplete="family-name"
+                                disabled={isLoading}
                             />
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="email-label" className={styles.inputLabel}>
-                            Email address
-                        </label>
-                        <input id="email-label"
-                               type="email"
-                               name="email"
-                               maxLength="255"
-                               className={styles.inputText}
-                               autoComplete="currentUsername"
-                               required={true}
-                               disabled={isLoading}
-                               value={email}
-                               onChange={(e) => setEmail(e.target.value)}
+                        <Input
+                            formik={formik}
+                            type="email"
+                            fieldName='email'
+                            label="Email address"
+                            autoComplete="email"
+                            disabled={isLoading}
                         />
                     </div>
                     <div>
-                        <label htmlFor="password-label" className={styles.inputLabel}>
-                            Password
-                        </label>
-                        <input id="password-label"
-                               type="password"
-                               name="password"
-                               maxLength={255}
-                               minLength={6}
-                               pattern="^[\S]+.*[\S]+$"
-                               className={styles.inputText}
-                               autoComplete="currentPassword"
-                               required={true}
-                               disabled={isLoading}
-                               value={password}
-                               onChange={(e) => setPassword(e.target.value)}
+                        <Input
+                            formik={formik}
+                            type="password"
+                            fieldName='password'
+                            label="Password"
+                            autoComplete="new-password"
+                            disabled={isLoading}
                         />
                     </div>
-                    <Button disabled={isLoading}
-                            loading={isLoading}
-                            wide={true}>Create account</Button>
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                        loading={isLoading}
+                        wide={true}>Create account</Button>
                 </form>
-
                 <SeparatingLine content="OR"/>
-
                 <GoogleButton text="Signup with Google"/>
                 <FacebookButton text="Signup with Facebook"/>
-
                 <p className={styles.termsWarning}>
                     By signing up, you agree to our&nbsp;
                     <Link to="/terms-of-use" target="_blank">
@@ -138,11 +173,9 @@ export default (props) => {
                     </Link>
                 </p>
             </div>
-
             <p className={styles.afterwords}>
                 Already have an account? <Link to="/auth/login">Login here.</Link>
             </p>
-
         </main>
     );
 }
