@@ -5,8 +5,8 @@ import FacebookButton from "./FacebookButton";
 import Checkbox from "../common/checkbox/Checkbox";
 import SeparatingLine from "../common/line/SeparatingLine";
 import Button from "../common/button/Button";
-import styles from './Auth.module.css';
 import auth from '../common/Auth';
+import styles from './Auth.module.css';
 
 export default (props) => {
 
@@ -63,9 +63,9 @@ export default (props) => {
         <main className={styles.authForm}>
             <h1>Welcome back!</h1>
 
-            <p>{error}</p>
-
             <div className={styles.formModal}>
+                <p className={styles.error}>{error}</p>
+
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email-label"
@@ -92,7 +92,9 @@ export default (props) => {
                         <input id="password-label"
                                type="password"
                                name="password"
-                               maxLength="255"
+                               maxLength={255}
+                               minLength={6}
+                               pattern="^[\S]+.*[\S]+$"
                                className={styles.inputText}
                                autoComplete="currentPassword"
                                required={true}
@@ -106,10 +108,10 @@ export default (props) => {
                         <Link to="/auth/forgot">Forgot password?</Link>
                     </div>
                     <Button
+                        wide={true}
                         disabled={isLoading}
-                        content="Log In"
-                        wide="true"
-                    />
+                        loading={isLoading}
+                    >Log In</Button>
                 </form>
 
                 <SeparatingLine content="OR"/>

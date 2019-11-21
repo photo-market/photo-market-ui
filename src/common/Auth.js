@@ -165,12 +165,12 @@ function register(user) {
             console.log(err);
             console.log(result);
             if (err) {
-                console.error(err.message);
+                if (debug) console.log(err, err.stack);
                 reject(err.code);
                 return;
             }
-            // Possible err.codes are:
             if (result && result.user) {
+                if (debug) console.log(result);
                 let cognitoUser = result.user;
                 console.log('User name is ' + cognitoUser.getUsername());
                 resolve(result);
@@ -187,12 +187,11 @@ function confirmSignup(params) {
             Pool: userPool
         });
         cognitoUser.confirmRegistration(params.confirmCode, true, (err, result) => {
-            if (debug) console.log(err);
-            if (debug) console.log(result);
             if (err) {
-                if (debug) console.log(err, err.stack); // an error occurred
+                if (debug) console.log(err, err.stack);
                 reject(err);
             } else {
+                if (debug) console.log(result);
                 resolve(result);
             }
         });

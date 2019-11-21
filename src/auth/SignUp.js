@@ -33,10 +33,13 @@ export default (props) => {
                 setConfirmationNeeded(true);
             })
             .catch((err) => {
-                console.log('Something happened during registration.' + JSON.stringify(err));
+                console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
                 switch (err) {
+                    case 'InvalidParameterException':
+                        setError('Check your password');
+                        break;
                     default:
-                        setError('Unknown error.');
+                        setError('Unknown error. Please try again later.');
                 }
             })
             .finally(() => {
@@ -47,9 +50,9 @@ export default (props) => {
     return (
         <main className={styles.authForm}>
             <h1>Create an account</h1>
-            <p>{error}</p>
             <div className={styles.formModal}>
-                <form onSubmit={handleSignup}>
+                <p className={styles.error}>{error}</p>
+                <form onSubmit={handleSignup} noValidate>
                     <div className={styles.twoColumns}>
                         <div>
                             <label className={styles.inputLabel}
@@ -107,7 +110,9 @@ export default (props) => {
                         <input id="password-label"
                                type="password"
                                name="password"
-                               maxLength="255"
+                               maxLength={255}
+                               minLength={6}
+                               pattern="^[\S]+.*[\S]+$"
                                className={styles.inputText}
                                autoComplete="currentPassword"
                                required={true}
@@ -116,9 +121,9 @@ export default (props) => {
                                onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <Button content="Create account"
-                            disabled={isLoading}
-                            wide="true"/>
+                    <Button disabled={isLoading}
+                            loading={isLoading}
+                            wide={true}>Create account</Button>
                 </form>
 
                 <SeparatingLine content="OR"/>
