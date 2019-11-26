@@ -1,263 +1,192 @@
-import axios from "axios";
-import {COGNITO_POOL_DATA, DEFAULT_USER, USER_PROFILE_KEY} from './consts/userAuth';
-import {
-    AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool
-} from "amazon-cognito-identity-js";
-
-/**
- * Cognito AWS Examples: Using the JavaScript SDK
- * https://docs.amazonaws.cn/en_us/cognito/latest/developerguide/using-amazon-cognito-user-identity-pools-javascript-examples.html
- */
+import {Auth} from 'aws-amplify';
 
 const debug = true;
-const userPool = new CognitoUserPool(COGNITO_POOL_DATA);
-let cognitoUser = null;
 
-function login(email, password) {
-    return new Promise((resolve, reject) => {
-        cognitoUser = new CognitoUser({
-            Username: email,
-            Pool: userPool
-        });
-        const authenticationDetails = new AuthenticationDetails({
-            Username: email,
-            Password: password
-        });
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: (result) => {
-                console.log("Ok");
-                console.log(result);
-                // Amazon Cognito creates a session and returns an ID, access, and refresh token for the authenticated user.
-                //const accessToken = result.getAccessToken().getJwtToken();
-                _getAttributes(cognitoUser);
-                resolve(result);
-            },
-            onFailure: (err) => {
-                console.log("Error happened: ");
-                console.log(err);
-                // Possible codes:
-                // UserNotConfirmedException
-                reject(err.code);
-            },
-            newPasswordRequired: (var1, var2) => {
-                console.log('newPasswordRequired');
-                console.log(var1);
-                console.log(var2);
-                reject("newPasswordRequired");
-            },
-            mfaRequired: (codeDeliveryDetails) => {
-                console.log("MFA");
-                // var verificationCode = window.prompt('Please input verification code', '');
-                // cognitoUser.sendMFACode(verificationCode, this);
-                reject("MFA");
+// Sign in user using email/password
+async function signIn({email, password, rememberMe}) {
+    return Auth.signIn(email, password)
+        .then((user) => {
+            console.log(user);
+            localStorage.setItem('signedIn', "true");
+            if (rememberMe) {
+                // todo remember device
             }
+            return user;
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
         });
-    });
 }
 
-function socialLogin(tokenId) {
-    // function signinCallback(authResult) {
-    //     if (authResult['status']['signed_in']) {
-    //
-    //         // Add the Google access token to the Cognito credentials login map.
-    //         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    //             IdentityPoolId: 'IDENTITY_POOL_ID',
-    //             Logins: {
-    //                 'accounts.google.com': authResult['id_token']
-    //             }
-    //         });
-    //         // Obtain AWS credentials
-    //         AWS.config.credentials.get(function () {
-    //             // Access AWS resources here.
-    //         });
-    //     }
-    // }
+// Get AWS credentials directly from Cognito
+async function socialSignIn(provider) {
+    return Auth.federatedSignIn({provider})
+        .then(res => {
+            console.log(res);
+            return Auth.currentAuthenticatedUser();
+        })
+        .then(res => {
+            console.log(res);
+            localStorage.setItem('social_user', JSON.stringify(res));
+            localStorage.setItem('signedIn', "true");
+            return res;
+        })
+        .catch(e => {
+            console.log(e);
+            return e;
+        });
+}
 
-    const data = {
-        provider: 'google',
-        token: tokenId
+function linkSocial() {
+    const params = {
+        "DestinationUser": {
+            "ProviderAttributeValue": "username",
+            "ProviderName": "Cognito"
+        },
+        "SourceUser": {
+            "ProviderAttributeName": "Cognito_Subject",
+            "ProviderAttributeValue": "username",
+            "ProviderName": "Google"
+        },
+        "UserPoolId": "YOUR_POOL"
     };
-    return axios.post(`/api/v1/auth/social-login`, data)
-        .then(response => saveProfile(response.data));
+
 }
 
-/**
- * Internal AWS Cognito SDK just cleans localStorage
- * No actual ajax requests are made.
- */
-function signOut() {
+// Sign out users.
+async function signOut(global = false) {
     if (debug) console.log(`Logging out...`);
-    return new Promise((resolve, reject) => {
-        //saveProfile(DEFAULT_USER);
-        const cognitoUser = userPool.getCurrentUser();
-        if (cognitoUser != null) {
-            cognitoUser.getSession((err, session) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log('AuthService: Session validity: ' + session.isValid());
-                cognitoUser.signOut();
-                resolve('ok');
-            });
-        } else {
-            console.log('AuthService: No user.');
-            resolve('ok');
-        }
-    })
+    /**
+     * Note: although the tokens are revoked,
+     * the AWS credentials will remain valid until they expire (which by default is 1 hour)
+     */
+    return Auth.signOut({global})
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
 }
 
-/**
- * Makes ajax request to invalidate other tokens.
- */
-function signOutGlobal() {
-    if (debug) console.log(`SigningOut global...`);
-    return new Promise((resolve, reject) => {
-        saveProfile(DEFAULT_USER);
+// Update password
+async function changePassword(oldPassword, newPassword) {
+    return Auth.currentAuthenticatedUser()
+        .then(user => {
+            return Auth.changePassword(user, oldPassword, newPassword);
+        })
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
+}
 
-        // If page was reloaded
-        if (!cognitoUser) {
-            console.log('AuthService: restoring cognitoUser');
-            cognitoUser = userPool.getCurrentUser();
-            if (!cognitoUser) {
-                console.log('AuthService: no cognitoUser was found.');
-                resolve();
-                return;
-            }
-        }
-
-        cognitoUser.getSession((err, session) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            console.log('session validity: ' + session.isValid());
-        });
-
-        try {
-            cognitoUser.globalSignOut({
-                onSuccess: msg => {
-                    console.log('AuthService: ok, signed out from all devices.');
-                    console.log(msg);
-                    resolve(msg);
-                },
-                onFailure: err => {
-                    console.log('AuthService: failed to signed out.');
-                    console.log(err, err.stack);
-                    reject(err);
-                }
-            });
-        } catch (err) {
+// Send email to reset password
+async function forgotPassword(email) {
+    return Auth.forgotPassword(email)
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(err => {
             console.log(err);
-        }
-    })
+            return err;
+        });
 }
 
-function register(user) {
-    return new Promise((resolve, reject) => {
-        const attributes = [
-            {Name: 'email', Value: user.email},
-            {Name: 'given_name', Value: user.firstName},
-            {Name: 'family_name', Value: user.lastName},
-        ];
-        const cognitoAttributes = attributes.map(attr => new CognitoUserAttribute(attr));
-        userPool.signUp(user.email, user.password, cognitoAttributes, null, (err, result) => {
+// Update forgot password using code from email
+async function forgotPasswordSubmit(email, code, new_password) {
+    return Auth.forgotPasswordSubmit(email, code, new_password)
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(err => {
             console.log(err);
-            console.log(result);
-            if (err) {
-                if (debug) console.log(err, err.stack);
-                reject(err.code);
-                return;
-            }
-            if (result && result.user) {
-                if (debug) console.log(result);
-                let cognitoUser = result.user;
-                console.log('User name is ' + cognitoUser.getUsername());
-                resolve(result);
-            }
+            return err;
         });
-    });
 }
 
-/** Confirm user account using code received in email */
-function confirmSignup(params) {
-    return new Promise((resolve, reject) => {
-        const cognitoUser = new CognitoUser({
-            Username: params.email,
-            Pool: userPool
+// Creates a new user in User Pool
+async function signUp(user) {
+    return Auth.signUp({
+        username: user.email,
+        password: user.password,
+        attributes: {
+            // 'email': user.email,
+            // 'given_name': user.firstName,
+            // 'last_name': user.lastName
+        },
+        validationData: []  //optional
+    })
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(err => {
+            console.log(err);
+            throw err; // re-throw
         });
-        cognitoUser.confirmRegistration(params.confirmCode, true, (err, result) => {
-            if (err) {
-                if (debug) console.log(err, err.stack);
-                reject(err);
-            } else {
-                if (debug) console.log(result);
-                resolve(result);
-            }
-        });
-    });
 }
 
+// After retrieving the confirmation code from the user
+async function confirmSignup(params) {
+    console.log(JSON.stringify(params, null, 2));
+    return Auth.confirmSignUp(params.email, params.code, {
+        // Optional. Force user confirmation irrespective of existing alias. By default set to True.
+        forceAliasCreation: true
+    })
+        .then(data => {
+            console.log(data);
+            return data;
+        })
+        .catch(err => {
+            console.log(err);
+            throw err; // re-throw
+        });
+
+}
+
+// Resend Sign Up code
+async function resetConfirmationCode(email) {
+    return Auth.resendSignUp(email)
+        .then((res) => {
+            console.log('Auth: Code resent successfully.');
+            return res;
+        })
+        .catch(e => {
+            console.log(e);
+            throw e;
+        });
+}
+
+// Get user attributes
+async function getCurrentUser() {
+    // let user = await Auth.currentAuthenticatedUser({bypassCache: true});
+    // const {attributes} = user;
+    // console.log(attributes);
+    // return user;
+}
+
+// Update user attributes
+async function updateProfile(newUser) {
+    const user = await Auth.currentAuthenticatedUser();
+    const result = await Auth.updateUserAttributes(user, newUser);
+    console.log(result); // SUCCESS
+    return result;
+}
+
+// Check if current user is authenticated
 function isAuthenticated() {
-    return getCurrentUser().role !== 'GUEST';
-}
-
-function saveProfile(user) {
-    const userStr = JSON.stringify(user);
-    if (debug) console.log('AuthService: Saving profile...' + userStr);
-    localStorage.setItem(USER_PROFILE_KEY, userStr);
-}
-
-function getCurrentUser() {
-    const auth = localStorage.getItem(USER_PROFILE_KEY);
-    if (auth) {
-        return JSON.parse(auth);
-    }
-    return DEFAULT_USER;
-}
-
-function resetConfirmationCode(email) {
-    return new Promise((resolve, reject) => {
-        const cognitoUser = new CognitoUser({
-            Username: email,
-            Pool: userPool
-        });
-        cognitoUser.resendConfirmationCode((err, result) => {
-            if (err) {
-                if (debug) console.log(err);
-                reject(err);
-                return;
-            }
-            if (debug) console.log(result);
-            resolve(result);
-        });
-    });
-}
-
-function _getAttributes(cognitoUser) {
-    cognitoUser.getUserAttributes((err, result) => {
-        if (err) {
-            if (debug) console.log(err);
-            return;
-        }
-        if (debug) console.log(result);
-        const user = {};
-        result.forEach(attr => {
-            user[attr.getName()] = attr.getValue();
-        });
-        if (debug) console.log(user);
-        saveProfile(user);
-    });
+    return localStorage.getItem('signedIn') === "true";
 }
 
 export default {
-    login,
-    socialLogin,
+    signIn,
+    socialSignIn,
     signOut,
-    signOutGlobal,
-    register,
+    signUp,
     confirmSignup,
     resetConfirmationCode,
+    changePassword,
+    forgotPassword,
+    forgotPasswordSubmit,
     getCurrentUser,
-    isAuthenticated
+    isAuthenticated,
+    updateProfile
 };

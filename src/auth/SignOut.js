@@ -7,8 +7,7 @@ export default ({history}) => {
 
     useEffect(() => {
         console.log('SignOut - useEffect');
-        // authService.signOut()
-        authService.signOutGlobal()
+        authService.signOut(true)
             .then((result) => {
                 console.log('SignOut: Logged out!');
                 setRedirect(true);

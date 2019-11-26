@@ -8,6 +8,7 @@ import FacebookButton from "./FacebookButton";
 import auth from '../common/Auth';
 import styles from "./Auth.module.css";
 import {useFormik} from "formik";
+import Input from "../common/input/Input";
 
 const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -32,29 +33,6 @@ const initialValues = {
     password: ''
 };
 
-const Input = ({formik, type, fieldName, disabled, label, autoComplete}) => {
-    let style = styles.inputText;
-    style += ' ' + (formik.touched[fieldName] && formik.errors[fieldName] ? styles.inputError : ' ');
-    return (
-        <>
-            {formik.touched[fieldName] && formik.errors[fieldName] &&
-            <div>{formik.errors[fieldName]}</div>
-            }
-            <label className={styles.inputLabel} htmlFor="firstName">
-                {label}
-            </label>
-            <input id={fieldName}
-                   name={fieldName}
-                   type={type}
-                   className={style}
-                   disabled={disabled}
-                   autoComplete={autoComplete}
-                   {...formik.getFieldProps(fieldName)}
-            />
-        </>
-    )
-};
-
 export default (props) => {
 
     const [isLoading, setLoading] = useState(false);
@@ -72,7 +50,7 @@ export default (props) => {
         }
     });
 
-    function handleSubmit(values) {
+    function handleSubmit(values, params) {
         setLoading(true);
         const user = {
             email: values.email,
@@ -80,14 +58,19 @@ export default (props) => {
             firstName: values.firstName,
             lastName: values.lastName
         };
-        auth.register(user)
+        console.log(JSON.stringify(values, null, 2));
+        console.log(JSON.stringify(params, null, 2));
+        auth.signUp(user)
             .then((res) => {
                 console.log('SignUp: Successfully signed-up.');
                 setConfirmationNeeded(true);
             })
             .catch((err) => {
                 console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
-                switch (err) {
+                switch (err.code) {
+                    case 'NotAuthorizedException':
+                        setError(err.message);
+                        break;
                     case 'UsernameExistsException':
                         setError(
                             <p>Such email is already registered. &nbsp;
@@ -161,7 +144,10 @@ export default (props) => {
                         type="submit"
                         disabled={isLoading}
                         loading={isLoading}
-                        wide={true}>Create account</Button>
+                        wide={true}
+                    >
+                        Create account
+                    </Button>
                 </form>
                 <SeparatingLine content="OR"/>
                 <GoogleButton text="Signup with Google"/>

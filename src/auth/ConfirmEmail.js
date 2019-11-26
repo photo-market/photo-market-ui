@@ -14,9 +14,11 @@ export default (props) => {
     const [lastResend, setLastResend] = useResendCodeHandler();
 
     useEffect(() => {
+        let timeout;
         if (isConfirmed) {
-            props.history.push('/account');
+            timeout = setTimeout(() => props.history.push('/'), 3000);
         }
+        return () => clearTimeout(timeout);
     });
 
     function handleSubmit(e) {
@@ -29,11 +31,12 @@ export default (props) => {
         const queryParams = queryString.parse(props.location.search);
         const params = {
             email: queryParams.email,
-            confirmCode: confirmCode
+            code: confirmCode
         };
         authService.confirmSignup(params)
-            .then((res) => {
+            .then(() => {
                 console.log('Account confirmed.');
+                setError("Success! Redirecting you to a home page...");
                 setConfirmed(true);
             })
             .catch((err) => {
@@ -41,6 +44,9 @@ export default (props) => {
                 switch (err.code) {
                     case "CodeMismatchException":
                         setError("Code mismatch");
+                        break;
+                    case "ExpiredCodeException":
+                        setError("Code expired.");
                         break;
                     default:
                         setError('Unkown error.');
@@ -91,9 +97,9 @@ export default (props) => {
     return (
         <main className={styles.authForm}>
             <h1>Email confirmation</h1>
-            <p>{error}</p>
             <div className={styles.formModal}>
                 <form onSubmit={handleSubmit}>
+                    <div className={styles.error}>{error}</div>
                     <div>
                         <label className={styles.inputLabel}>
                             Code from email:

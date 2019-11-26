@@ -1,4 +1,5 @@
 import React, {lazy, Suspense} from 'react';
+// import {withAuthenticator} from 'aws-amplify-react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons'
@@ -7,6 +8,29 @@ import PrivateRoute from "../common/PrivateRoute";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import './App.css';
+import Amplify from "aws-amplify";
+
+// Auth configuration
+Amplify.configure({
+    Auth: {
+        region: 'us-east-1',
+        userPoolId: 'us-east-1_e4yWOhKOu',
+        userPoolWebClientId: 'eag4fq1gp84ac5c5s0r98g18p',
+    },
+    //  Hosted UI configuration
+    oauth: {
+        domain: "photo-market-prod.auth.us-east-1.amazoncognito.com",
+        //clientID: '',
+        //redirectUri: '',
+        //audience: 'https://your_domain/userinfo',
+        scope: ['email', 'openid'],
+        // redirectSignIn: "https://photo-market.club/auth/callback",
+        // redirectSignOut: "https://photo-market.club/auth/sign-out",
+        redirectSignIn: "http://localhost:3000/auth/callback",
+        redirectSignOut: "http://localhost:3000/auth/sign-out",
+        responseType: "token"
+    }
+});
 
 // Pre-load icons
 library.add(fab, faChevronDown, faCheckSquare, faCoffee);
@@ -36,3 +60,4 @@ function App() {
 }
 
 export default App;
+// export default withAuthenticator(App);
