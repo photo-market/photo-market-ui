@@ -5,10 +5,10 @@ import Button from "../common/button/Button";
 import SeparatingLine from "../common/line/SeparatingLine";
 import GoogleButton from "./GoogleButton";
 import FacebookButton from "./FacebookButton";
-import auth from '../common/Auth';
 import styles from "./Auth.module.css";
 import {useFormik} from "formik";
 import Input from "../common/input/Input";
+import {useAuth} from "../common/AuthProvider";
 
 const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -35,9 +35,9 @@ const initialValues = {
 
 export default (props) => {
 
+    const auth = useAuth();
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [confirmationNeeded, setConfirmationNeeded] = useState(false);
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -45,9 +45,9 @@ export default (props) => {
     });
 
     useEffect(() => {
-        if (confirmationNeeded) {
-            props.history.push(`/auth/confirm?email=${formik.values.email}`);
-        }
+        // if (confirmationNeeded) {
+        //     props.history.push(`/auth/confirm?email=${formik.values.email}`);
+        // }
     });
 
     function handleSubmit(values, params) {
@@ -63,7 +63,6 @@ export default (props) => {
         auth.signUp(user)
             .then((res) => {
                 console.log('SignUp: Successfully signed-up.');
-                setConfirmationNeeded(true);
             })
             .catch((err) => {
                 console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
@@ -71,7 +70,7 @@ export default (props) => {
                     case 'NotAuthorizedException':
                         setError(err.message);
                         break;
-                    case 'UsernameExistsException':
+                    case 'UserExistsException':
                         setError(
                             <p>Such email is already registered. &nbsp;
                                 <Link to="/auth/forgot">Forgot your password?</Link></p>

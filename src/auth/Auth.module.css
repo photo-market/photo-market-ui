@@ -1,8 +1,15 @@
-.error {
+.error, .success {
     text-align: center;
-    color: rgba(205, 30, 38, 0.84);
     font-weight: 700;
     margin-bottom: 10px;
+}
+
+.error {
+    color: #cd1e26;
+}
+
+.success {
+    color: #389c2d;
 }
 
 .authForm {

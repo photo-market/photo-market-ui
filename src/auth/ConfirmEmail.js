@@ -2,11 +2,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Link} from "react-router-dom";
 import Button from "../common/button/Button";
 import styles from './Auth.module.css';
-import authService from '../common/Auth';
 import queryString from 'query-string'
+import {useAuth} from "../common/AuthProvider";
 
 export default (props) => {
 
+    const auth = useAuth();
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [confirmCode, setConfirmCode] = useState("");
@@ -33,7 +34,7 @@ export default (props) => {
             email: queryParams.email,
             code: confirmCode
         };
-        authService.confirmSignup(params)
+        auth.confirmAccount(params)
             .then(() => {
                 console.log('Account confirmed.');
                 setError("Success! Redirecting you to a home page...");
@@ -65,7 +66,7 @@ export default (props) => {
             return;
         }
         const queryParams = queryString.parse(props.location.search);
-        authService.resetConfirmationCode(queryParams.email)
+        auth.sendConfirmationCode(queryParams.email)
             .then((result) => {
                 console.log('New code sent.');
                 setLastResend(new Date());

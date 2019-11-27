@@ -1,12 +1,13 @@
 import React from 'react';
 import {Redirect, Route} from "react-router-dom";
-import authService from "./Auth";
+import {useAuth} from "./AuthProvider";
 
 export default ({component: Component, roles, ...rest}) => {
+    const auth = useAuth();
     return (
         <Route {...rest} render={(props) => {
             // Check authentication
-            if (!authService.isAuthenticated()) {
+            if (!auth.isAuthenticated) {
                 return <Redirect to={{pathname: '/auth/login', state: {from: props.location}}}/>;
             }
 

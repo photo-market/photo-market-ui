@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import styles from './Profile.module.css';
 import Button from "../common/button/Button";
-import authService from "../common/Auth";
+import {useAuth} from "../common/AuthProvider";
 
 export default () => {
 
+    const auth = useAuth();
     const error = useState('');
-    const profile = authService.getCurrentUser();
+
+    const profile = auth.user;
 
     useEffect(() => {
 

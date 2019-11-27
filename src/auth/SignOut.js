@@ -1,32 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import authService from "../common/Auth";
+import {useAuth} from "../common/AuthProvider";
 
 export default ({history}) => {
 
-    const [redirect, setRedirect] = useState(false);
+    const auth = useAuth();
 
     useEffect(() => {
         console.log('SignOut - useEffect');
-        authService.signOut(true)
+        auth.signOut()
             .then((result) => {
-                console.log('SignOut: Logged out!');
-                setRedirect(true);
+                console.log('SignOut: signed out!');
+                history.push('/');
             })
             .catch((err) => {
-                console.log('SignOut: Cant signout');
+                console.log('SignOut: Cant sign-out');
                 console.log(err);
             })
             .finally(() => {
                 console.log('SignOut: Im done! :)');
             });
-    }, []);
-
-    useEffect(() => {
-        if (redirect) {
-            console.log('SignOut: Redirecting...');
-            history.push('/');
-        }
     });
+
 
     return (
         <div>

@@ -5,12 +5,11 @@ import FacebookButton from "./FacebookButton";
 import Checkbox from "../common/checkbox/Checkbox";
 import SeparatingLine from "../common/line/SeparatingLine";
 import Button from "../common/button/Button";
-import authService from '../common/Auth';
 import styles from './Auth.module.css';
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import Input from "../common/input/Input";
-import {Auth} from 'aws-amplify';
+import {useAuth} from "../common/AuthProvider";
 
 const validationSchema = Yup.object({
     email: Yup.string()
@@ -30,10 +29,10 @@ const initialValues = {
 
 export default (props) => {
 
+    const auth = useAuth();
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [confirmationNeeded, setConfirmationNeeded] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(authService.isAuthenticated);
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -47,47 +46,35 @@ export default (props) => {
     });
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (auth.isAuthenticated) {
             props.history.push('/');
         }
     });
 
     function onSubmit(values) {
-        console.log("SignUp: handleSubmit");
-        console.log(JSON.stringify(values, null, 2));
-
         setLoading(true);
         const params = {
             email: values.email,
             password: values.password,
             rememberMe: values.rememberMe
         };
-        console.log(JSON.stringify(params, null, 2));
-
-        authService.signIn(params)
+        auth.signIn(params)
             .then((res) => {
                 console.log('Successfully logged-in.');
-                setIsLoggedIn(true);
-                debugger;
             })
             .catch((err) => {
                 console.log('Something happened during login.' + JSON.stringify(err));
-                debugger;
-                switch (err.code) {
+                switch (err && err.code) {
                     case 'NotAuthorizedException':
-                        // The error happens when the incorrect password is provided
-                        setError('Incorrect email of password.');
+                        setError(<div>Incorrect email/password. <Link to="/auth/forgot">Forgot password?</Link></div>);
                         break;
                     case 'UserNotFoundException':
-                        // The error happens when the supplied username/email does not exist in the Cognito user pool
                         setError('Such email is not found.');
                         break;
                     case 'UserNotConfirmedException':
                         setConfirmationNeeded(true);
                         break;
                     case 'PasswordResetRequiredException':
-                        // The error happens when the password is reset in the Cognito console
-                        // In this case you need to call forgotPassword to reset the password
                         break;
                     default:
                         setError('Unknown error.');
@@ -102,23 +89,8 @@ export default (props) => {
         <main className={styles.authForm}>
             <h1>Welcome back!</h1>
 
-            <button onClick={() => {
-                authService.getCurrentUser().then((res) => setError(JSON.stringify(res, null, 2)));
-            }}>LOAD
-            </button>
-
-            <button onClick={() => {
-                authService.updateProfile().then((res) => setError(JSON.stringify(res, null, 2)));
-            }}>Update
-            </button>
-
-            <button onClick={() => {
-                authService.forgotPassword('saniaky@gmail.com').then((res) => setError(JSON.stringify(res, null, 2)));
-            }}>Forgot password
-            </button>
-
             <div className={styles.formModal}>
-                <p className={styles.error}>{error}</p>
+                <div className={styles.error}>{error}</div>
                 <form onSubmit={formik.handleSubmit}>
                     <div>
                         <Input
@@ -157,8 +129,8 @@ export default (props) => {
                     >Log In</Button>
                 </form>
                 <SeparatingLine content="OR"/>
-                <GoogleButton text="Login using Google" onClick={() => authService.socialSignIn('Google')}/>
-                <FacebookButton text="Login using Facebook" onClick={() => authService.socialSignIn('Facebook')}/>
+                <GoogleButton text="Login using Google" onClick={() => auth.socialSignIn('Google')}/>
+                <FacebookButton text="Login using Facebook" onClick={() => auth.socialSignIn('Facebook')}/>
             </div>
             <p className={styles.afterwords}>
                 Don’t have an account? <Link to="/auth/signup">Sign up.</Link>
