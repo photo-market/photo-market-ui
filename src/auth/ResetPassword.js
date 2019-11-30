@@ -8,8 +8,6 @@ import * as Yup from "yup";
 import Input from "../common/input/Input";
 
 const validationSchema = Yup.object({
-    code: Yup.string()
-        .required(),
     password: Yup.string()
         .required('Required')
 });
@@ -30,19 +28,27 @@ export default (props) => {
         onSubmit: handleSubmit
     });
 
-    function handleSubmit(values) {
+    async function handleSubmit(values, params) {
+        console.log(JSON.stringify(values, null, 2));
+        console.log(JSON.stringify(params, null, 2));
         setLoading(true);
-        const body = {code: props.match.params.code, password: values.password};
-        auth.resetPassword(body)
-            .then(() => {
-                setSuccess("Success! You can now log in.");
-            })
-            .catch((err) => {
-                setError(err.msg);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const body = {
+            token: props.match.params.token,
+            password: values.password
+        };
+        try {
+            await auth.resetPassword(body);
+            setSuccess(<div>Success! You can now <Link to="/auth/login">log in</Link>.</div>);
+        } catch (err) {
+            switch (err && err.code) {
+                case 'CodeExpiredException':
+                    setError("Your code is invalid or expired.");
+                    break;
+                default:
+                    setError("Sorry, something went wrong.");
+            }
+        }
+        setLoading(false);
     }
 
     return (

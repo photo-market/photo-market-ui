@@ -25,7 +25,7 @@ export default (props) => {
 
                 {auth.isAuthenticated ?
                     <MenuDropdown
-                        title={currentUser.firstName}
+                        title={currentUser.profile.firstName}
                         items={[
                             {to: "/chat", content: `Messages`},
                             {to: "/account", content: `Settings`},

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import * as Yup from 'yup';
 import Button from "../common/button/Button";
@@ -37,6 +37,7 @@ export default (props) => {
 
     const auth = useAuth();
     const [isLoading, setLoading] = useState(false);
+    const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const formik = useFormik({
         initialValues,
@@ -50,45 +51,42 @@ export default (props) => {
         // }
     });
 
-    function handleSubmit(values, params) {
-        setLoading(true);
-        const user = {
-            email: values.email,
-            password: values.password,
-            firstName: values.firstName,
-            lastName: values.lastName
-        };
+    async function handleSubmit(values, params) {
         console.log(JSON.stringify(values, null, 2));
         console.log(JSON.stringify(params, null, 2));
-        auth.signUp(user)
-            .then((res) => {
-                console.log('SignUp: Successfully signed-up.');
-            })
-            .catch((err) => {
-                console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
-                switch (err.code) {
-                    case 'NotAuthorizedException':
-                        setError(err.message);
-                        break;
-                    case 'UserExistsException':
-                        setError(
-                            <p>Such email is already registered. &nbsp;
-                                <Link to="/auth/forgot">Forgot your password?</Link></p>
-                        );
-                        break;
-                    case 'InvalidParameterException':
-                        setError('Check your parameters.');
-                        break;
-                    case 'InvalidPasswordException':
-                        setError('Check your password');
-                        break;
-                    default:
-                        setError('Unknown error. Please try again later.');
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        setLoading(true);
+        try {
+            console.log('SignUp: Successfully signed-up.');
+            await auth.signUp({
+                email: values.email,
+                password: values.password,
+                firstName: values.firstName,
+                lastName: values.lastName
+            });
+            setSuccess(<div>Successfully signed-up. <Link to="/auth/login">Sign-in here.</Link></div>)
+        } catch (err) {
+            console.log('SignUp: Something happened during registration.' + JSON.stringify(err));
+            switch (err.code) {
+                case 'NotAuthorizedException':
+                    setError(err.msg);
+                    break;
+                case 'UserExistsException':
+                    setError(
+                        <p>Such email is already registered. &nbsp;
+                            <Link to="/auth/forgot">Forgot your password?</Link></p>
+                    );
+                    break;
+                case 'InvalidParameterException':
+                    setError('Check your parameters.');
+                    break;
+                case 'InvalidPasswordException':
+                    setError('Check your password');
+                    break;
+                default:
+                    setError('Unknown error. Please try again later.');
+            }
+        }
+        setLoading(false);
     }
 
     return (
@@ -97,6 +95,8 @@ export default (props) => {
             <div className={styles.formModal}>
                 <div className={styles.error}>{error}</div>
                 <form onSubmit={formik.handleSubmit}>
+                    <div className={styles.success}>{success}</div>
+                    <div className={styles.error}>{error}</div>
                     <div className={styles.twoColumns}>
                         <div>
                             <Input

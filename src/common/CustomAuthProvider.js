@@ -80,9 +80,8 @@ export default function useProvideAuth() {
             });
     };
 
-    const resetPassword = ({code, newPassword}) => {
-        const body = {password: newPassword};
-        return axios.post(`${URL}/auth/reset/${code}`, body)
+    const resetPassword = (body) => {
+        return axios.post(`${URL}/auth/reset-password`, body)
             .then(res => res.data)
             .then(data => {
                 return true;
