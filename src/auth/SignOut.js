@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useAuth} from "../common/AuthProvider";
 
 export default ({history}) => {
