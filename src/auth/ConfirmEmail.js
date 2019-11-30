@@ -49,6 +49,9 @@ export default (props) => {
                     case "ExpiredCodeException":
                         setError("Code expired.");
                         break;
+                    case "EmailNotFound":
+                        setError("Email not found.");
+                        break;
                     default:
                         setError('Unkown error.');
                 }

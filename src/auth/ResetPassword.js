@@ -40,13 +40,8 @@ export default (props) => {
             await auth.resetPassword(body);
             setSuccess(<div>Success! You can now <Link to="/auth/login">log in</Link>.</div>);
         } catch (err) {
-            switch (err && err.code) {
-                case 'CodeExpiredException':
-                    setError("Your code is invalid or expired.");
-                    break;
-                default:
-                    setError("Sorry, something went wrong.");
-            }
+            if (err && err.code === 'CodeExpiredException') setError("Your code is invalid or expired.");
+            else setError("Sorry, something went wrong.");
         }
         setLoading(false);
     }
