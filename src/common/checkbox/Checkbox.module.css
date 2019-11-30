@@ -39,15 +39,6 @@
     content: "";
     position: absolute;
     display: none;
-}
-
-/* Show the checkmark when checked */
-.labelCheckbox input:checked ~ .checkmark:after {
-    display: block;
-}
-
-/* Style the checkmark/indicator */
-.labelCheckbox .checkmark:after {
     left: 6px;
     top: 2px;
     width: 5px;
@@ -55,4 +46,9 @@
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+}
+
+/* Show the checkmark when checked */
+.labelCheckbox input:checked ~ .checkmark:after {
+    display: block;
 }

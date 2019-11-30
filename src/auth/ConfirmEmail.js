@@ -71,9 +71,9 @@ export default (props) => {
                 console.log('New code sent.');
                 setLastResend(new Date());
             })
-            .catch((error) => {
+            .catch((err) => {
                 console.log(`Error sending new code.`);
-                switch (error.code) {
+                switch (err.code) {
                     case 'LimitExceededException':
                         setError(`Too many attempts. Please wait an retry later.`);
                         break;

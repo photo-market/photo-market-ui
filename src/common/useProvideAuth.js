@@ -41,8 +41,8 @@ export default function useProvideAuth() {
 
     };
 
-    const signUp = (user) => {
-        return axios.post(`${URL}/auth/signup`, user)
+    const signUp = (data) => {
+        return axios.post(`${URL}/auth/signup`, data)
             .then(res => res.data)
             .then(user => {
                 setUser(user);

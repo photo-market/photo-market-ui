@@ -8,7 +8,7 @@ export default ({title, items}) => {
     const [showMenu, setShowMenu] = useState(false);
 
     return (
-        <div className="dropdown">
+        <div className={styles.dropdown}>
             <button onClick={setShowMenu(!showMenu)}>
                 {title}
                 <FontAwesomeIcon icon="coffee"/>
