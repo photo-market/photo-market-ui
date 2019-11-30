@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Link} from "react-router-dom";
-import Button from "../common/button/Button";
 import styles from './Auth.module.css';
+import Button from "../common/button/Button";
+import {Link} from "react-router-dom";
 import queryString from 'query-string'
 import {useAuth} from "../common/AuthProvider";
 

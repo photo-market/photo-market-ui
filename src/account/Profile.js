@@ -1,12 +1,39 @@
 import React, {useState, useEffect} from 'react';
-import styles from './Profile.module.css';
 import Button from "../common/button/Button";
+import styles from './Profile.module.css';
 import {useAuth} from "../common/AuthProvider";
+import Input from "../common/input/Input";
+import {useFormik} from "formik";
+import schemas from '../common/validationSchemas';
+import * as Yup from "yup";
+import authStyles from '../auth/Auth.module.css';
+
+const validationSchema = Yup.object({
+    firstName: schemas.firstName,
+    lastName: schemas.lastName,
+    password: schemas.password
+});
 
 export default () => {
 
     const auth = useAuth();
-    const error = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isLoading, setLoading] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            fistName: auth.user.profile.firstName,
+            lastName: auth.user.profile.lastName,
+        },
+        validationSchema,
+        onSubmit
+    });
+
+    function onSubmit(values) {
+        setLoading(true);
+        setError('');
+        setSuccess('');
+    }
 
     const profile = auth.user;
 
@@ -40,19 +67,32 @@ export default () => {
                 <div className={styles.right}>
                     <section>
                         <h4>Account</h4>
-                        <p>{error}</p>
-                        <form>
-                            <div>
-                                <label>
-                                    First Name
-                                    <input type="text" value={""}/>
-                                </label>
-                                <label>
-                                    Last Name
-                                    <input type="text"/>
-                                </label>
+                        <div className={authStyles.success}>{success}</div>
+                        <div className={authStyles.error}>{error}</div>
+                        <form onSubmit={formik.handleSubmit}>
+                            <div className={authStyles.twoColumns}>
+                                <div>
+                                    <Input
+                                        formik={formik}
+                                        fieldName="firstName"
+                                        type="text"
+                                        label="First Name"
+                                        autoComplete="given-name"
+                                        disabled={isLoading}
+                                    />
+                                </div>
+                                <div>
+                                    <Input
+                                        formik={formik}
+                                        type="text"
+                                        fieldName="lastName"
+                                        label="Last Name"
+                                        autoComplete="family-name"
+                                        disabled={isLoading}
+                                    />
+                                </div>
                             </div>
-                            <Button>Save</Button>
+                            <Button type="submit" loading={isLoading}>Save</Button>
                         </form>
                     </section>
                     <section>

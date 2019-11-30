@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from "./Button.module.css";
 import Dots from "../dots/Dots";
+import styles from "./Button.module.css";
 
 export default ({type, wide, disabled, onClick, inline, loading, children}) => {
     let generatedClass = wide ? styles.wide : ' ';

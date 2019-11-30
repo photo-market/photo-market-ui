@@ -1,29 +1,21 @@
 import React, {useEffect, useState} from 'react';
+import styles from "./Auth.module.css";
+import Button from "../common/button/Button";
 import {Link} from "react-router-dom";
 import * as Yup from 'yup';
-import Button from "../common/button/Button";
 import SeparatingLine from "../common/line/SeparatingLine";
 import GoogleButton from "./GoogleButton";
 import FacebookButton from "./FacebookButton";
-import styles from "./Auth.module.css";
 import {useFormik} from "formik";
 import Input from "../common/input/Input";
 import {useAuth} from "../common/AuthProvider";
+import schemas from '../common/validationSchemas';
 
 const validationSchema = Yup.object({
-    firstName: Yup.string()
-        .max(15, 'Must be 15 characters or less')
-        .required('Required'),
-    lastName: Yup.string()
-        .max(20, 'Must be 20 characters or less')
-        .required('Required'),
-    email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
-    password: Yup.string()
-        .min(6, 'Minimum password length is 6 characters.')
-        .max(50, 'Maximum password length is 50 characters.')
-        .required('Required')
+    firstName: schemas.firstName,
+    lastName: schemas.lastName,
+    email: schemas.email,
+    password: schemas.password
 });
 
 const initialValues = {
