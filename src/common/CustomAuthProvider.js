@@ -50,7 +50,6 @@ export default function useProvideAuth() {
                 return user;
             })
             .catch(err => {
-                debugger;
                 throw err.response.data;
             });
     };
