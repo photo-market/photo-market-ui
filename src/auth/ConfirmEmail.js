@@ -76,12 +76,10 @@ export default (props) => {
             })
             .catch((err) => {
                 console.log(`Error sending new code.`);
-                switch (err.code) {
-                    case 'LimitExceededException':
-                        setError(`Too many attempts. Please wait an retry later.`);
-                        break;
-                    default:
-                        setError('Sorry, please try again later.');
+                if (err && err.code === 'LimitExceededException') {
+                    setError(`Too many attempts. Please wait an retry later.`);
+                } else {
+                    setError('Sorry, please try again later.');
                 }
             })
             .finally(() => {
