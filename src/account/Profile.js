@@ -35,8 +35,6 @@ export default () => {
         setSuccess('');
     }
 
-    const profile = auth.user;
-
     useEffect(() => {
 
     });
@@ -57,10 +55,10 @@ export default () => {
                             </div>
                         </div>
                         <div className={styles.name}>
-                            {profile.given_name} {profile.family_name}
+                            {auth.user.profile.given_name} {auth.user.profile.family_name}
                         </div>
                         <div className={styles.email}>
-                            {profile.email}
+                            {auth.user.profile.email}
                         </div>
                     </div>
                 </section>
@@ -101,7 +99,7 @@ export default () => {
                     </section>
                     <section>
                         <h4>Service area</h4>
-                        <Button>Delete account</Button>
+                        <Button disabled={true}>Delete account</Button>
                     </section>
                 </div>
             </div>
