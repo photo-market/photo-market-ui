@@ -1,5 +1,5 @@
 import React, {useContext, createContext} from "react";
-import useProvideAuth from "./CustomAuthProvider";
+import useProvideAuth from "./useProvideAuth";
 
 /**
  * Inspired by:
