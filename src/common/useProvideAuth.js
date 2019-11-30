@@ -44,10 +44,10 @@ export default function useProvideAuth() {
     const signUp = (data) => {
         return axios.post(`${URL}/auth/signup`, data)
             .then(res => res.data)
-            .then(user => {
-                setUser(user);
+            .then(res => {
+                setUser(res);
                 setIsAuthenticated(true);
-                return user;
+                return res;
             })
             .catch(err => {
                 throw err.response.data;
