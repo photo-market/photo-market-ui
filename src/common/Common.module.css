@@ -1,0 +1,26 @@
+
+/*  =========== START - COMMA SEPARATED LIST ============== */
+ul.commaSeparated {
+    display: inline;
+    list-style: none;
+}
+
+ul.commaSeparated li {
+    display: inline;
+}
+
+ul.commaSeparated li:after {
+    content: ", ";
+}
+
+ul.commaSeparated li:last-child:after {
+    content: "";
+}
+/*  =========== END - COMMA SEPARATED LIST ============== */
+
+
+/*  =========== START - NO STYLE LIST ============== */
+ul.noStyleList {
+    list-style: none;
+}
+/*  =========== END - NO STYLE LIST ============== */

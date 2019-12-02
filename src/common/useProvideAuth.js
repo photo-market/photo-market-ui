@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import utils from './util';
 
 const URL = process.env.REACT_APP_API_URL;
 

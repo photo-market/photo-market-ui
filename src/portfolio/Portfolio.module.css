@@ -1,0 +1,123 @@
+.profileContainer {
+    width: 90%;
+    max-width: 64em;
+    margin: 0 auto;
+}
+
+.breadcrumbs {
+    border-bottom: 1px solid #e9eced;
+    padding: 20px 0 20px 0;
+}
+
+.headline {
+    display: flex;
+    flex-direction: row;
+    vertical-align: top;
+    margin: 20px 0 20px 0;
+    justify-content: space-between;
+    line-height: 22px;
+}
+
+.rating i.fa-star {
+    color: #febe14;
+}
+
+.profileDetails {
+    display: flex;
+}
+
+.profileDetails img {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    margin: 0 16px 16px 0;
+}
+
+.profileDetails > * {
+    margin-bottom: 16px;
+}
+
+.profileInfo h1 {
+    margin-bottom: 16px;
+}
+
+.onlineStatus {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+@keyframes online {
+    0% {
+        opacity: .25;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: .25;
+    }
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    background-color: #2db783;
+    border-radius: 50%;
+    display: inline-block;
+    animation: online 2s infinite;
+}
+
+.business-hours {
+
+}
+
+.profileDetails {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.additionalInfo {
+    display: flex;
+    line-height: 1.5;
+}
+
+.additionalInfo span {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.additionalInfo > div {
+    margin-right: 50px;
+}
+
+.additionalInfo .biography {
+    flex-basis: 80%;
+}
+
+.additionalInfo .socialNetworksList {
+    list-style: none;
+    display: flex;
+    font-size: 24px;
+}
+
+.additionalInfo .socialNetworksList li {
+    margin-right: 8px;
+}
+
+.contactInfo > div {
+    margin-bottom: 8px;
+}
+
+
+.profileContainer .portfolio {
+    border-top: 1px solid #e9eced;
+    margin-top: 20px;
+}
+
+.profileContainer .portfolio > h1 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 18px;
+}
