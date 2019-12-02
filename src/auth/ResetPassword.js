@@ -29,8 +29,6 @@ export default (props) => {
     });
 
     async function handleSubmit(values, params) {
-        console.log(JSON.stringify(values, null, 2));
-        console.log(JSON.stringify(params, null, 2));
         setLoading(true);
         const body = {
             token: props.match.params.token,

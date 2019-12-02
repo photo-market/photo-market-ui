@@ -8,7 +8,7 @@ export default (props) => {
 
     const auth = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
-    const currentUser = auth.user;
+    const profileName = auth.user && auth.user.profile ? auth.user.profile.firstName : '';
 
     function toggleMobileMenu() {
         setMenuOpen(!menuOpen);
@@ -25,7 +25,7 @@ export default (props) => {
 
                 {auth.isAuthenticated ?
                     <MenuDropdown
-                        title={currentUser.profile.firstName}
+                        title={profileName}
                         items={[
                             {to: "/chat", content: `Messages`},
                             {to: "/account", content: `Settings`},
@@ -54,7 +54,7 @@ export default (props) => {
                      style={{transform: menuOpen ? "translateY(60px)" : "translateY(-100%)"}}>
 
                     {auth.isAuthenticated ?
-                        <div>Hi {currentUser['given_name']}</div>
+                        <div>Hi {profileName}</div>
                         :
                         <ul onClick={toggleMobileMenu}>
                             <li><Link to="/">Home</Link></li>

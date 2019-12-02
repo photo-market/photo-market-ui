@@ -22,7 +22,7 @@ export default function useProvideAuth() {
     }, []);
 
     const signIn = ({email, password, rememberMe}) => {
-        const body = {email, password, device: utils.getBrowserInfo()};
+        const body = {email, password};
         return axios.post(`${URL}/auth/login`, body)
             .then(res => res.data)
             .then(data => {

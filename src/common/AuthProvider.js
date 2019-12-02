@@ -7,7 +7,10 @@ import useProvideAuth from "./useProvideAuth";
  */
 
 // Default context value
-const AuthContext = createContext({});
+const AuthContext = createContext({
+    user: {profile: {}},
+    isAuthenticated: false
+});
 
 // Provider component that wraps your app and makes auth object ...
 // ... available to any child component that calls useAuth().
