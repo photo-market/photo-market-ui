@@ -1,26 +1,26 @@
 import React, {useEffect} from 'react';
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 
-export default ({history}) => {
-
+export default (props) => {
     const auth = useAuth();
 
     useEffect(() => {
-        console.log('SignOut - useEffect');
-        auth.signOut()
-            .then((result) => {
-                console.log('SignOut: signed out!');
-                history.push('/');
-            })
-            .catch((err) => {
-                console.log('SignOut: Cant sign-out');
-                console.log(err);
-            })
-            .finally(() => {
-                console.log('SignOut: Im done! :)');
-            });
+        if (auth.isAuthenticated) {
+            auth.signOut()
+                .then((result) => {
+                    console.log('SignOut: signed out!');
+                })
+                .catch((err) => {
+                    console.log('SignOut: Cant sign-out');
+                    console.log(err);
+                })
+                .finally(() => {
+                    console.log('SignOut: done.');
+                });
+        } else {
+            props.history.push('/');
+        }
     });
-
 
     return (
         <div>

@@ -2,7 +2,8 @@ import React, {lazy, Suspense} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import './Icons';
 import './Analytics';
-import {ProvideAuth} from "../common/AuthProvider";
+import './Axios';
+import {ProvideAuth} from "../common/useAuth";
 import PrivateRoute from "../common/PrivateRoute";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
@@ -10,8 +11,8 @@ import './App.css';
 
 function App() {
     return (
-        <ProvideAuth>
-            <Router>
+        <Router>
+            <ProvideAuth>
                 <Header/>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Switch>
@@ -26,8 +27,8 @@ function App() {
                     </Switch>
                 </Suspense>
                 <Footer/>
-            </Router>
-        </ProvideAuth>
+            </ProvideAuth>
+        </Router>
     );
 }
 

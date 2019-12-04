@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import styles from './Header.module.css';
 import MenuDropdown from "./MenuDropdown";
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 
 export default (props) => {
 

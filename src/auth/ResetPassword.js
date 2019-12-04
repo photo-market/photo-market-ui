@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styles from "./Auth.module.css";
 import Button from "../common/button/Button";
 import {Link} from "react-router-dom";
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import Input from "../common/input/Input";

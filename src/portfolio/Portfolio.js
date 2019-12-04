@@ -14,15 +14,13 @@ import {
     faYoutubeSquare
 } from "@fortawesome/free-brands-svg-icons";
 
-const URL = process.env.REACT_APP_API_URL;
-
 export default (props) => {
 
     const [profile, setProfile] = useState({});
     //const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${URL}/portfolios/${props.match.params.userId}`)
+        axios.get(`/portfolios/${props.match.params.userId}`)
             .then(res => res.data)
             .then(data => {
                 setProfile(data);

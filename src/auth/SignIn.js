@@ -9,7 +9,7 @@ import SeparatingLine from "../common/line/SeparatingLine";
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import Input from "../common/input/Input";
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 import schemas from '../common/validationSchemas';
 
 

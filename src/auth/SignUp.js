@@ -8,7 +8,7 @@ import GoogleButton from "./GoogleButton";
 import FacebookButton from "./FacebookButton";
 import {useFormik} from "formik";
 import Input from "../common/input/Input";
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 import schemas from '../common/validationSchemas';
 
 const validationSchema = Yup.object({

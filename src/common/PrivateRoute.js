@@ -1,13 +1,19 @@
 import React from 'react';
 import {Redirect, Route} from "react-router-dom";
-import {useAuth} from "./AuthProvider";
+import {useAuth} from "./useAuth";
 
 export default ({component: Component, roles, ...rest}) => {
     const auth = useAuth();
     return (
         <Route {...rest} render={(props) => {
+
+            // Wait until useAuth is initialized
+            if (auth.isAuthenticated === undefined) {
+                return <div>Loading....</div>;
+            }
+
             // Check authentication
-            if (!auth.isAuthenticated) {
+            if (auth.isAuthenticated === false) {
                 return <Redirect to={{pathname: '/auth/login', state: {from: props.location}}}/>;
             }
 

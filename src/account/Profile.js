@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import Button from "../common/button/Button";
 import styles from './Profile.module.css';
-import {useAuth} from "../common/AuthProvider";
+import {useAuth} from "../common/useAuth";
 import Input from "../common/input/Input";
 import {useFormik} from "formik";
 import schemas from '../common/validationSchemas';
 import * as Yup from "yup";
 import authStyles from '../auth/Auth.module.css';
 import axios from "axios";
-
-const URL = process.env.REACT_APP_API_URL;
 
 const validationSchema = Yup.object({
     firstName: schemas.firstName,
@@ -41,16 +39,16 @@ export default () => {
 
     useEffect(() => {
         setSessions([]);
-        axios.get(`${URL}/account`)
+        axios.get(`/account`)
             .then(res => res.data)
             .then(data => {
 
             });
-        // axios.get(`${URL}/auth/sessions`)
-        //     .then(res => res.data)
-        //     .then(data => setSessions(data))
-        //     .catch((e) => console.log(e))
-        //     .finally(() => console.log('sessions'));
+        axios.get(`/auth/sessions`)
+            .then(res => res.data)
+            .then(data => setSessions(data))
+            .catch((e) => console.log(e))
+            .finally(() => console.log('sessions'));
     }, []);
 
     return (

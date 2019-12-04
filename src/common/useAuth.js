@@ -1,5 +1,6 @@
-import React, {useContext, createContext} from "react";
+import React, {useEffect, useContext, createContext} from "react";
 import useProvideAuth from "./useProvideAuth";
+import {useRouter} from "./useRouter";
 
 /**
  * Inspired by:
@@ -7,10 +8,7 @@ import useProvideAuth from "./useProvideAuth";
  */
 
 // Default context value
-const AuthContext = createContext({
-    user: {profile: {}},
-    isAuthenticated: false
-});
+const AuthContext = createContext();
 
 // Provider component that wraps your app and makes auth object ...
 // ... available to any child component that calls useAuth().
@@ -28,3 +26,18 @@ export function ProvideAuth({children}) {
 export const useAuth = () => {
     return useContext(AuthContext);
 };
+
+// redirect the user if they are signed out and trying to view
+// a page that should require them to be authenticated.
+export function useRequireAuth(redirectUrl = '/') {
+    const auth = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (auth.isAuthenticated === false) {
+            router.push(redirectUrl);
+        }
+    }, [auth, router, redirectUrl]);
+
+    return auth;
+}
