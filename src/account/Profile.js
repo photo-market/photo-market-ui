@@ -26,7 +26,7 @@ export default () => {
     const [sessions, setSessions] = useState([]);
     const formik = useFormik({
         initialValues: {
-            fistName: auth.user.profile.firstName,
+            firstName: auth.user.profile.firstName,
             lastName: auth.user.profile.lastName,
         },
         validationSchema,
@@ -76,7 +76,7 @@ export default () => {
                         <div className={authStyles.success}>{success}</div>
                         <div className={authStyles.error}>{error}</div>
                         <form onSubmit={formik.handleSubmit}>
-                            <div className={authStyles.twoColumns}>
+                            <div>
                                 <div>
                                     <Input
                                         formik={formik}

@@ -18,12 +18,11 @@ const URL = process.env.REACT_APP_API_URL;
 
 export default (props) => {
 
-    //const [isLoading, setLoading] = useState(true);
+    const [userId] = useState(props.match.params.userId);
     const [profile, setProfile] = useState({});
+    //const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log(props);
-        const userId = props.match.params.userId;
         axios.get(`${URL}/portfolio/${userId}`)
             .then(res => res.data)
             .then(data => {
@@ -35,7 +34,7 @@ export default (props) => {
             .finally(() => {
                 //setLoading(false);
             });
-    });
+    }, []);
 
     return (
         <main className={styles.profileContainer}>
