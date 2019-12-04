@@ -1,0 +1,188 @@
+main.messaging {
+    width: 90%;
+    max-width: 64em;
+    margin: 0 auto;
+    min-height: 300px;
+}
+
+.chat {
+    display: flex;
+    height: calc(100vh - 120px);
+}
+
+.leftBar {
+    /*width: 300px;*/
+    /*max-width: 300px;*/
+    min-width: 280px;
+}
+
+.smallAvatar {
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+
+.leftBar .dialogs .name {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.leftBar .search {
+    border-bottom: 1px solid #efefef;
+    padding: 7px;
+}
+
+.leftBar .search input {
+    border: none;
+    background-color: #f1f1f1;
+    height: 30px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.leftBar {
+    border-left: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+}
+
+.leftBar .dialogs ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.leftBar .dialogs li {
+    height: 65px;
+    border-bottom: 1px solid #efefef;
+    padding: 8px;
+}
+
+.leftBar .dialogs li.active {
+    background-color: #4c91c6;
+    color: white;
+}
+
+.leftBar .dialogs li.active .last-message-time,
+.leftBar .dialogs li.active .last-message {
+    color: white;
+}
+
+.leftBar .dialogs .nameAndDate {
+    display: flex;
+    justify-content: space-between;
+}
+
+.leftBar .dialogs .name {
+
+}
+
+.leftBar .dialogs .last-message,
+.leftBar .dialogs .last-message-time,
+.rightBar .recipientInfo .lastSeen {
+    color: #ababab;
+    /*font-weight: 300;*/
+    font-size: 12px;
+}
+
+.rightBar {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    border-right: 1px solid #efefef;
+}
+
+.rightBar .recipientInfo {
+    display: flex;
+    border-bottom: 1px solid #efefef;
+    padding: 10px;
+}
+
+.rightBar .recipientInfo .name {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.rightBar .messages {
+    background-color: #f9f9f9;
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    /*justify-content: flex-end;*/
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* for Firefox */
+    min-height: 0;
+}
+
+.rightBar .messages .incoming {
+    background: #ceddf1;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 13px;
+    align-self: flex-start;
+    max-width: 70%;
+}
+
+.rightBar .messages .outcoming {
+    background: #D3F1D7;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 13px;
+    align-self: flex-end;
+    max-width: 70%;
+}
+
+.rightBar .inputBar {
+    border-top: 1px solid #efefef;
+    padding: 10px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.rightBar .inputBar button {
+    color: #ababab;
+    background-color: unset;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    min-height: unset;
+}
+
+.rightBar .inputBar .text {
+    flex-grow: 1;
+}
+
+.rightBar .inputBar .textArea {
+    border: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    outline: none;
+    padding: 0;
+    vertical-align: middle;
+    max-height: 200px;
+    line-height: 1.5;
+    border-bottom: 2px solid white;
+    word-break: break-all;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.rightBar .inputBar .textArea:empty:before {
+    content: attr(data-placeholder);
+    color: #9aa2ab;
+    display: block;
+    margin-top: -1px;
+    margin-left: 1px;
+    pointer-events: none;
+}
+
+.rightBar .inputBar .textArea:focus {
+    border-bottom: 2px solid #009fd9;
+}

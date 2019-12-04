@@ -18,6 +18,7 @@ function App() {
                         <Route exact path="/" component={lazy(() => import('../home/Home'))}/>
                         <Route path="/auth" component={lazy(() => import('../auth/AuthRouter'))}/>
                         <Route path="/portfolio/:userId" component={lazy(() => import('../portfolio/Portfolio'))}/>
+                        <Route path="/chat" component={lazy(() => import('../chat/Chat'))}/>
                         <Route path="/terms" component={lazy(() => import('../policy/TermsOfUse'))}/>
                         <PrivateRoute path="/account" component={lazy(() => import('../account/AccountRouter'))}/>
                         <PrivateRoute path="/admin" component={lazy(() => import('../admin/AdminRouter'))}/>

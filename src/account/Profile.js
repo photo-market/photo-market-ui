@@ -40,12 +40,18 @@ export default () => {
     }
 
     useEffect(() => {
-        axios.get(`${URL}/auth/sessions`)
+        setSessions([]);
+        axios.get(`${URL}/account`)
             .then(res => res.data)
-            .then(data => setSessions(data))
-            .catch((e) => console.log(e))
-            .finally(() => console.log('sessions'));
-    });
+            .then(data => {
+
+            });
+        // axios.get(`${URL}/auth/sessions`)
+        //     .then(res => res.data)
+        //     .then(data => setSessions(data))
+        //     .catch((e) => console.log(e))
+        //     .finally(() => console.log('sessions'));
+    }, []);
 
     return (
         <div className={styles.container}>
@@ -63,7 +69,7 @@ export default () => {
                             </div>
                         </div>
                         <div className={styles.name}>
-                            {auth.user.profile.given_name} {auth.user.profile.family_name}
+                            {auth.user.profile.firstName} {auth.user.profile.lastName}
                         </div>
                         <div className={styles.email}>
                             {auth.user.profile.email}
