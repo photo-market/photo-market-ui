@@ -1,5 +1,8 @@
 import React from 'react';
 import styles from './Chat.module.css';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPaperclip, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
+
 // import {useState, useEffect} from 'react';
 
 export default (props) => {
@@ -123,6 +126,7 @@ export default (props) => {
                     <div className={styles.inputBar}>
                         <button className="attach">
                             <i className="fas fa-paperclip"/>
+                            <FontAwesomeIcon icon={faPaperclip}/>
                         </button>
                         <label style={{display: "none"}}>
                             <textarea name="text" placeholder="Write a message..."/>
@@ -133,7 +137,7 @@ export default (props) => {
                             // onfocusout="onFocusOut(event, this)"
                              data-placeholder="Write a message..."/>
                         <button>
-                            <i className="fas fa-paper-plane"/>
+                            <FontAwesomeIcon icon={faPaperPlane}/>
                         </button>
                     </div>
                 </div>

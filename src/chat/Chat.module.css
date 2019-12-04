@@ -63,8 +63,8 @@ main.messaging {
     color: white;
 }
 
-.leftBar .dialogs li.active .last-message-time,
-.leftBar .dialogs li.active .last-message {
+.leftBar .dialogs li.active .lastMessageTime,
+.leftBar .dialogs li.active .lastMessage {
     color: white;
 }
 
@@ -77,8 +77,8 @@ main.messaging {
 
 }
 
-.leftBar .dialogs .last-message,
-.leftBar .dialogs .last-message-time,
+.leftBar .dialogs .lastMessage,
+.leftBar .dialogs .lastMessageTime,
 .rightBar .recipientInfo .lastSeen {
     color: #ababab;
     /*font-weight: 300;*/
