@@ -1,26 +1,10 @@
 import React from 'react';
-import {useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import styles from './Home.module.css';
 import Select from "../common/select/Select";
+import {Link} from "react-router-dom";
 
 const URL = process.env.REACT_APP_API_URL;
-
-const profiles = [
-    {
-        id: '1',
-        link: '/profile',
-        cover: 'https://via.placeholder.com/300x150',
-        name: 'Steven Crisman',
-        tags: 'Wedding, headshot',
-    },
-    {
-        id: '2',
-        link: '/profile',
-        cover: 'https://via.placeholder.com/300x150',
-        name: 'Steven Crisman',
-        tags: 'Wedding, headshot',
-    }
-];
 
 const events = [
     {name: 'Wedding', key: 'wedding'},
@@ -32,13 +16,15 @@ const events = [
 
 export default (props) => {
 
+    const [portfolios, setPortfolios] = useState([]);
+
     useEffect(() => {
         fetch(`${URL}/portfolios`)
             .then(res => res.json())
             .then(data => {
-
+                setPortfolios(data);
             });
-    });
+    }, []);
 
     const submit = (event) => {
         event.preventDefault();
@@ -73,13 +59,17 @@ export default (props) => {
             <section className={styles.popularProfiles}>
                 <h1>Top portfolios</h1>
                 <div className={styles.portfoliosSection}>
-                    {profiles.map(profile =>
-                        <div className={styles.portfolioCard} key={profile.id}>
-                            <a href={profile.link}>
-                                <img src={profile.cover} alt=""/>
-                            </a>
-                            <h1><a href={profile.link}>{profile.name}</a></h1>
-                            <p>{profile.tags}</p>
+                    {portfolios.map(profile =>
+                        <div className={styles.portfolioCard} key={profile._id}>
+                            <Link to={`/portfolio/${profile._id}`}>
+                                <img src={"https://via.placeholder.com/300x150"} alt=""/>
+                            </Link>
+                            <h1>
+                                <Link to={`/portfolio/${profile._id}`}>
+                                    {profile.profile.firstName}, {profile.profile.lastName}
+                                </Link>
+                            </h1>
+                            <p>{'Wedding, headshot'}</p>
                         </div>
                     )}
                 </div>
