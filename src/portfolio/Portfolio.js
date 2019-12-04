@@ -1,13 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import Button from "../common/button/Button";
 import styles from './Portfolio.module.css';
 import commonStyles from '../common/Common.module.css';
-import {useAuth} from "../common/AuthProvider";
-import Input from "../common/input/Input";
-import {useFormik} from "formik";
-import schemas from '../common/validationSchemas';
 import axios from 'axios';
-import * as Yup from "yup";
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faComments, faMapMarkerAlt, faStar} from "@fortawesome/free-solid-svg-icons";
@@ -22,34 +16,10 @@ import {
 
 const URL = process.env.REACT_APP_API_URL;
 
-const validationSchema = Yup.object({
-    field: schemas.firstName,
-});
-
-
 export default (props) => {
 
-    const auth = useAuth();
+    //const [isLoading, setLoading] = useState(true);
     const [profile, setProfile] = useState({});
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isLoading, setLoading] = useState(true);
-    const formik = useFormik({
-        initialValues: {
-            fistName: auth.user.profile.firstName,
-            lastName: auth.user.profile.lastName,
-        },
-        validationSchema,
-        onSubmit
-    });
-
-    const user = auth.user.profile || {};
-
-    function onSubmit(values) {
-        setLoading(true);
-        setError('');
-        setSuccess('');
-    }
 
     useEffect(() => {
         console.log(props);
@@ -63,9 +33,9 @@ export default (props) => {
 
             })
             .finally(() => {
-                setLoading(false);
+                //setLoading(false);
             });
-    }, []);
+    });
 
     return (
         <main className={styles.profileContainer}>
@@ -78,7 +48,7 @@ export default (props) => {
                 <div className={styles.profileDetails}>
                     <img alt="Avatar" src={require("./avatar.jpg")}/>
                     <div className={styles.profileInfo}>
-                        <h1>{`${profile.lastName}, ${profile.firstName}`}Karolina E. Thompson </h1>
+                        <h1>{`${profile.lastName}, ${profile.firstName}`}</h1>
                         <div>
                             <div>
                                 <span className={styles.onlineStatus}>

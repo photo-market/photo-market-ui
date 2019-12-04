@@ -7,6 +7,9 @@ import {useFormik} from "formik";
 import schemas from '../common/validationSchemas';
 import * as Yup from "yup";
 import authStyles from '../auth/Auth.module.css';
+import axios from "axios";
+
+const URL = process.env.REACT_APP_API_URL;
 
 const validationSchema = Yup.object({
     firstName: schemas.firstName,
@@ -20,6 +23,7 @@ export default () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isLoading, setLoading] = useState(false);
+    const [sessions, setSessions] = useState([]);
     const formik = useFormik({
         initialValues: {
             fistName: auth.user.profile.firstName,
@@ -36,7 +40,11 @@ export default () => {
     }
 
     useEffect(() => {
-
+        axios.get(`${URL}/auth/sessions`)
+            .then(res => res.data)
+            .then(data => setSessions(data))
+            .catch((e) => console.log(e))
+            .finally(() => console.log('sessions'));
     });
 
     return (
@@ -92,6 +100,14 @@ export default () => {
                             </div>
                             <Button type="submit" loading={isLoading}>Save</Button>
                         </form>
+                    </section>
+                    <section>
+                        <h4>Sessions</h4>
+                        {sessions.map(session =>
+                            <div>
+
+                            </div>
+                        )}
                     </section>
                     <section>
                         <h4>Notifications</h4>
