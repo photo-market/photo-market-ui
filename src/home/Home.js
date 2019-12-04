@@ -3,6 +3,8 @@ import {useEffect} from 'react';
 import styles from './Home.module.css';
 import Select from "../common/select/Select";
 
+const URL = process.env.REACT_APP_API_URL;
+
 const profiles = [
     {
         id: '1',
@@ -31,11 +33,11 @@ const events = [
 export default (props) => {
 
     useEffect(() => {
-        // fetch('http://localhost:3000/api/portfolio')
-        //     .then(res => res.json())
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
+        fetch(`${URL}/portfolios`)
+            .then(res => res.json())
+            .then(data => {
+
+            });
     });
 
     const submit = (event) => {
